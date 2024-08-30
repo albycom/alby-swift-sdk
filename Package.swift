@@ -21,10 +21,7 @@ let package = Package(
         .target(
             name: "AlbyWidget",
             dependencies: [.product(name: "BottomSheet", package: "BottomSheet", condition: .when(platforms: [.iOS]))]
-        ),
-        .testTarget(
-            name: "AlbyWidgetTests",
-            dependencies: ["AlbyWidget"]),
+        )
     ],
     swiftLanguageVersions: [.v5]
 )

@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import BottomSheet
 import SwiftUI
 import WebKit
+import BottomSheetSwiftUI
 
 
 private struct AlbyWidgetView<Content: View>: View {
