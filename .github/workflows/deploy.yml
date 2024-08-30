@@ -1,8 +1,9 @@
 name: Release
 on:
-    push:
-        branches:
-            - master
+  push:
+    # Pattern matched against refs/tags
+    tags:
+      - '*'
 jobs:
   build:
       runs-on: macos-latest
