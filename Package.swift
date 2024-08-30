@@ -10,11 +10,11 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "AlbyWidget",
-            targets: ["AlbyWidget"]),
+            targets: ["AlbyWidget"])
     ],
     dependencies: [
-            .package(url: "https://github.com/lucaszischka/BottomSheet.git", from: "3.1.1")
-        ],
+        .package(url: "https://github.com/lucaszischka/BottomSheet.git", from: "3.1.1")
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.

@@ -10,7 +10,6 @@ import SwiftUI
 import WebKit
 import BottomSheetSwiftUI
 
-
 private struct AlbyWidgetView<Content: View>: View {
     @State var widgetVisible = false
     @State var bottomSheetPosition: BottomSheetPosition = .absolute(100)
@@ -22,85 +21,81 @@ private struct AlbyWidgetView<Content: View>: View {
     let bottomOffset: CGFloat
     @ObservedObject var viewModel = WebViewModel()
 
-
     var body: some View {
         ZStack {
             content
                 .padding([.bottom], self.$widgetVisible.wrappedValue && bottomOffset != 0 ? 50 : 0)
             Color.black.opacity(0)
-            .bottomSheet(
-                bottomSheetPosition: self.$bottomSheetPosition,
-                switchablePositions: [.hidden, .relative(0.7), .relativeTop(0.975)]
-            ) {
-                SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html")!, viewModel: viewModel)
-                    .safeAreaInset(edge: .bottom) {
-                        if (sheetExpanded) {
-                            HStack {
-                                TextField("Ask a question", text: $newUserMessage)
-                                    .focused($textInputIsFocused)
-                                    .padding()
-                                    .background(RoundedRectangle(cornerRadius: 12)
-                                                    .fill(Color.white))
-                                    .onSubmit {
+                .bottomSheet(
+                    bottomSheetPosition: self.$bottomSheetPosition,
+                    switchablePositions: [.hidden, .relative(0.7), .relativeTop(0.975)]
+                ) {
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html")!, viewModel: viewModel)
+                        .safeAreaInset(edge: .bottom) {
+                            if sheetExpanded {
+                                HStack {
+                                    TextField("Ask a question", text: $newUserMessage)
+                                        .focused($textInputIsFocused)
+                                        .padding()
+                                        .background(RoundedRectangle(cornerRadius: 12)
+                                                        .fill(Color.white))
+                                        .onSubmit {
+                                            handleSendMessage()
+                                        }
+                                    Button {
                                         handleSendMessage()
+                                    } label: {
+                                        Image(systemName: "arrow.up.circle.fill")
                                     }
-                                Button {
-                                    handleSendMessage()
-                                } label: {
-                                    Image(systemName: "arrow.up.circle.fill")
+                                    .disabled($newUserMessage.wrappedValue.isEmpty)
                                 }
-                                .disabled($newUserMessage.wrappedValue.isEmpty)
-                            }
-                            .padding()
+                                .padding()
 
-                        } else {
-                            EmptyView()
+                            } else {
+                                EmptyView()
+                            }
                         }
+                }
+                .showDragIndicator(true)
+                .enableSwipeToDismiss()
+                .onDismiss {
+                    widgetVisible = false
+                }
+                .onDragEnded { value in
+                    let threshold = -100.0
+                    if value.translation.height < threshold && !self.sheetExpanded {
+                        self.sheetExpanded = true
+                        let sendMessage = "sheet-expanded"
+                        self.viewModel.callbackValueFromNative.send(sendMessage)
                     }
-            }
-            .showDragIndicator(true)
-            .enableSwipeToDismiss()
-            .onDismiss {
-                widgetVisible = false;
-            }
-            .onDragEnded{ value in
-                let threshold = -100.0
-                if (value.translation.height < threshold && !self.sheetExpanded) {
-                    self.sheetExpanded = true;
-                    let sendMessage = "sheet-expanded";
-                    self.viewModel.callbackValueFromNative.send(sendMessage);
                 }
-            }
-            .onReceive(self.$viewModel.callbackValueJS.wrappedValue, perform: { result in
-                switch (result) {
-                case "widget-rendered":
-                    widgetVisible = true;
-                    bottomSheetPosition = .absolute(100)
-                    break
-                case "preview-button-clicked":
-                    self.sheetExpanded = true;
-                    bottomSheetPosition = .relativeTop(0.975)
-                    break
-                default:
-                    break
-                }
-            })
-            .offset(y: self.$widgetVisible.wrappedValue ? bottomOffset : -10000)
-            .padding([bottomOffset > 0 ? .bottom : .top], self.$widgetVisible.wrappedValue ? abs(bottomOffset) : 0)
+                .onReceive(self.$viewModel.callbackValueJS.wrappedValue, perform: { result in
+                    switch result {
+                    case "widget-rendered":
+                        widgetVisible = true
+                        bottomSheetPosition = .absolute(100)
+                        case "preview-button-clicked":
+                        self.sheetExpanded = true
+                        bottomSheetPosition = .relativeTop(0.975)
+                    default:
+                        break
+                    }
+                })
+                .offset(y: self.$widgetVisible.wrappedValue ? bottomOffset : -10000)
+                .padding([bottomOffset > 0 ? .bottom : .top], self.$widgetVisible.wrappedValue ? abs(bottomOffset) : 0)
         }
     }
 
     func handleSendMessage() {
         textInputIsFocused = false
-        let sendMessage = self.$newUserMessage.wrappedValue;
-        newUserMessage = "";
-        self.viewModel.callbackValueFromNative.send(sendMessage);
+        let sendMessage = self.$newUserMessage.wrappedValue
+        newUserMessage = ""
+        self.viewModel.callbackValueFromNative.send(sendMessage)
     }
 
-
     func handlePreviewButtonClicked() {
-        self.bottomSheetPosition = .relative(0.5);
-        self.sheetExpanded = true;
+        self.bottomSheetPosition = .relative(0.5)
+        self.sheetExpanded = true
     }
 
 }
