@@ -60,12 +60,12 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
     }
     
     class Coordinator : NSObject, WKNavigationDelegate {
-        var parent: MyWebView
+        var parent: SwiftWebView
         var callbackValueFromNative: AnyCancellable? = nil
         
         var delegate: WebViewHandlerDelegate?
         
-        init(_ uiWebView: MyWebView) {
+        init(_ uiWebView: SwiftWebView) {
             self.parent = uiWebView
             self.delegate = parent
         }
@@ -94,7 +94,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
     }
 }
 
-extension MyWebView.Coordinator: WKScriptMessageHandler {
+extension SwiftWebView.Coordinator: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if message.name == "IOS_BRIDGE" {
             delegate?.receivedJsonValueFromWebView(value: message.body as! [String : Any?])

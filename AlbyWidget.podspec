@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'AlbyWidget'
-    s.version          = '0.0.1'
+    s.version          = '0.0.2'
     s.summary          = 'A short description of BloggerBird.'
     s.homepage         = 'https://github.com/albycom/alby_widget_ios'
     s.license          = { :type => 'MIT', :file => 'LICENSE.md' }
