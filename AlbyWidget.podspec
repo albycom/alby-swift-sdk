@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
     s.name             = 'AlbyWidget'
-    s.version          = '0.0.2'
-    s.summary          = 'A short description of BloggerBird.'
+    s.version          = '0.0.5'
+    s.summary          = 'Increase conversion in your e-commerce by answering all your shopper questions before they even ask.'
     s.homepage         = 'https://github.com/albycom/alby_widget_ios'
     s.license          = { :type => 'MIT', :file => 'LICENSE.md' }
     s.author           = { 'Alby, Inc.' => 'thiago@alby.com' }
