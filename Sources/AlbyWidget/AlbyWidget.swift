@@ -23,6 +23,8 @@ private struct AlbyWidgetView<Content: View>: View {
 
     let content: Content
     let bottomOffset: CGFloat
+    let brandId: String
+    let productId: String
     @ObservedObject var viewModel = WebViewModel()
 
     var body: some View {
@@ -34,7 +36,7 @@ private struct AlbyWidgetView<Content: View>: View {
                     bottomSheetPosition: self.$bottomSheetPosition,
                     switchablePositions: [.hidden, .relative(0.7), .relativeTop(0.975)]
                 ) {
-                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html")!, viewModel: viewModel)
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId\(productId)")!, viewModel: viewModel)
                         .safeAreaInset(edge: .bottom) {
                             if sheetExpanded {
                                 HStack {
@@ -118,8 +120,8 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-        productId: String, bottomOffset: CGFloat = 0
+        productId: String, brandId: String, bottomOffset: CGFloat = 0
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId)
     }
 }
