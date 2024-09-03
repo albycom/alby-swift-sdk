@@ -36,7 +36,7 @@ private struct AlbyWidgetView<Content: View>: View {
                     bottomSheetPosition: self.$bottomSheetPosition,
                     switchablePositions: [.hidden, .relative(0.7), .relativeTop(0.975)]
                 ) {
-                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId\(productId)")!, viewModel: viewModel)
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, viewModel: viewModel)
                         .safeAreaInset(edge: .bottom) {
                             if sheetExpanded {
                                 HStack {
