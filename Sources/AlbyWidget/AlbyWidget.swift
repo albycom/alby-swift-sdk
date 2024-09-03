@@ -8,7 +8,11 @@
 import Foundation
 import SwiftUI
 import WebKit
+#if canImport(BottomSheet)
+import BottomSheet
+#elseif canImport(BottomSheetSwiftUI)
 import BottomSheetSwiftUI
+#endif
 
 private struct AlbyWidgetView<Content: View>: View {
     @State var widgetVisible = false
