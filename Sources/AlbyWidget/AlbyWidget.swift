@@ -80,7 +80,7 @@ private struct AlbyWidgetView<Content: View>: View {
                     case "widget-rendered":
                         widgetVisible = true
                         bottomSheetPosition = .absolute(100)
-                        case "preview-button-clicked":
+                    case "preview-button-clicked":
                         self.sheetExpanded = true
                         bottomSheetPosition = .relativeTop(0.975)
                     default:

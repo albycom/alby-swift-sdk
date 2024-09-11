@@ -81,7 +81,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
             self.callbackValueFromNative = self.parent.viewModel.callbackValueFromNative
                 .receive(on: RunLoop.main)
                 .sink(receiveValue: { value in
-                    let js = "var event = new CustomEvent('iosEvent', { detail: { data: '\(value)'}}); window.dispatchEvent(event);"
+                    let js = "var event = new CustomEvent('albyNativeEvent', { detail: { data: '\(value)'}}); window.dispatchEvent(event);"
                     webview.evaluateJavaScript(js, completionHandler: { (_, error) in
                         if let error = error {
                             print(error)
