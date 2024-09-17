@@ -10,7 +10,7 @@ AlbyWidget for iOS supports iOS 15+.
 Xcode 15 is required to build Alby iOS SDK.
 
 ### CocoaPods
-Cocoapods 1.11.0 is required to install Intercom.
+Cocoapods 1.11.0 is required to install AlbyWidget.
 Add the AlbyWidget pod into your Podfile and run `pod install`.
 ```ruby
     target :YourTargetName do
