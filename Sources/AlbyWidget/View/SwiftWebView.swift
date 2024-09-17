@@ -15,6 +15,7 @@ protocol WebViewHandlerDelegate {
 
 struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
     let url: URL?
+    let isScrollEnabled: Bool
     @ObservedObject var viewModel: WebViewModel
 
     func makeCoordinator() -> Coordinator {
@@ -23,6 +24,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
 
     // Receiving data from React JS to IOS
     func receivedJsonValueFromWebView(value: [String: Any?]) {
+        print($viewModel);
         $viewModel.callbackValueJS.wrappedValue.send((value.first?.value as? String)!)
     }
 
@@ -38,7 +40,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
 
         webview.navigationDelegate = context.coordinator
         webview.allowsBackForwardNavigationGestures = false
-        webview.scrollView.isScrollEnabled = true
+        webview.scrollView.isScrollEnabled = isScrollEnabled
         if #available(iOS 16.4, *) {
             webview.isInspectable = true
         } else {
@@ -46,7 +48,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         } // For Debug
 
         webview.isOpaque = false
-        webview.backgroundColor = UIColor.clear
+        webview.backgroundColor = UIColor.white
 
         return webview
     }
@@ -56,7 +58,10 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
             return
         }
         let request = URLRequest(url: myUrl)
-        uiView.load(request)
+
+        if uiView.url != url {
+            uiView.load(request)
+        }
     }
 
     class Coordinator: NSObject, WKNavigationDelegate {
@@ -75,7 +80,6 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         }
 
         func webView(_ webview: WKWebView, didFinish: WKNavigation!) {
-            print("webView didFinish")
 
             // sending data from IOS to React JS
             self.callbackValueFromNative = self.parent.viewModel.callbackValueFromNative
@@ -85,11 +89,21 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
                     webview.evaluateJavaScript(js, completionHandler: { (_, error) in
                         if let error = error {
                             print(error)
-                        } else {
-                            print("Successfully sent data React app : \((value))")
                         }
                     })
                 })
+        }
+
+        func webView(_ webview: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+
+            if navigationAction.navigationType == .linkActivated, let url = navigationAction.request.url {
+                // Open the link in an external browser (Safari)
+                UIApplication.shared.open(url)
+                decisionHandler(.cancel)
+            } else {
+                // Allow other types of navigation
+                decisionHandler(.allow)
+            }
         }
     }
 }

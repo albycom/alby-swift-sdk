@@ -20,7 +20,10 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "AlbyWidget",
-            dependencies: [.product(name: "BottomSheet", package: "BottomSheet", condition: .when(platforms: [.iOS]))]
+            dependencies: [.product(name: "BottomSheet", package: "BottomSheet", condition: .when(platforms: [.iOS]))],
+            resources: [
+                        .process("Assets") // Replace "Assets" with the name of your folder
+                    ]
         )
     ],
     swiftLanguageVersions: [.v5]

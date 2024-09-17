@@ -17,6 +17,8 @@ import BottomSheetSwiftUI
 private struct AlbyWidgetView<Content: View>: View {
     @State var widgetVisible = false
     @State var bottomSheetPosition: BottomSheetPosition = .absolute(100)
+    @State var isLoading: Bool = false
+    @State var isLoadingText: String?
     @State var sheetExpanded = false
     @State var newUserMessage = ""
     @FocusState private var textInputIsFocused: Bool
@@ -25,7 +27,15 @@ private struct AlbyWidgetView<Content: View>: View {
     let bottomOffset: CGFloat
     let brandId: String
     let productId: String
-    @ObservedObject var viewModel = WebViewModel()
+
+
+    let lightGrayColor = Color(red: 209 / 255.0, green: 213 / 255.0, blue: 219 / 255.0, opacity: 1.0)
+    let darkColor = Color(red: 17 / 255.0, green: 25 / 255.0, blue: 40 / 255.0, opacity: 1.0)
+    let inputBorderColor = Color(red: 107 / 255.0, green: 114 / 255.0, blue: 128 / 255.0, opacity: 1.0);
+    let inputLoadingBg = Color(red: 229 / 255.0, green: 231 / 255.0, blue: 235 / 255.0, opacity: 1.0);
+
+
+    @StateObject var viewModel = WebViewModel()
 
     var body: some View {
         ZStack {
@@ -34,62 +44,156 @@ private struct AlbyWidgetView<Content: View>: View {
             Color.black.opacity(0)
                 .bottomSheet(
                     bottomSheetPosition: self.$bottomSheetPosition,
-                    switchablePositions: [.hidden, .relative(0.7), .relativeTop(0.975)]
+                    switchablePositions: [.hidden, .absolute(100), .relative(0.7), .relativeTop(0.975)]
                 ) {
-                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, viewModel: viewModel)
+                    if (sheetExpanded) {
+                        HStack(spacing: 4) {
+                            Text("Powered by")
+                                .font(.system(size: 11))
+                                .foregroundColor(Color(red: 147 / 255.0, green: 157 / 255.0, blue: 175 / 255.0, opacity: 1.0))
+                            if let imageURL = Bundle.module.url(forResource: "alby_logo", withExtension: "png"),
+                               let uiImage = UIImage(contentsOfFile: imageURL.path) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 37, height: 11)
+                            }
+                            Spacer()
+                            Button(action: {
+                                self.bottomSheetPosition = .hidden
+                            }, label: {
+                                Image(systemName: "xmark")
+                                    .foregroundColor(Color.gray)
+                                    .padding()
+                            })
+                        }.padding(.leading)
+                        Divider()
+                    }
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, isScrollEnabled: true, viewModel: viewModel)
                         .safeAreaInset(edge: .bottom) {
                             if sheetExpanded {
                                 HStack {
-                                    TextField("Ask a question", text: $newUserMessage)
+                                    TextField(
+                                        ($isLoading.wrappedValue ? $isLoadingText.wrappedValue : "Ask any question about this product")!,
+                                              text: $newUserMessage)
+                                        .onAppear(perform: {
+                                                UITextField.appearance().clearButtonMode = .whileEditing
+                                            })
+                                        .padding([.horizontal], 7)
+                                        .padding([.vertical], 12)
+                                        .padding(.leading, $isLoading.wrappedValue ? 25 : 7)
+                                        .font(.system(size: 14))
                                         .focused($textInputIsFocused)
-                                        .padding()
-                                        .background(RoundedRectangle(cornerRadius: 12)
-                                                        .fill(Color.white))
+                                        .disabled($isLoading.wrappedValue)
+                                        .background(
+                                            RoundedRectangle(cornerRadius: 12)
+                                                .fill($isLoading.wrappedValue ? inputLoadingBg : Color.clear)
+                                        )
+                                        .overlay(
+                                            ZStack {
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke($isLoading.wrappedValue ? Color.clear : inputBorderColor, lineWidth: 1)
+
+                                                ;
+                                                HStack {
+                                                    if ($isLoading.wrappedValue) {
+                                                        ProgressView()
+                                                            .scaleEffect(0.8)
+                                                            .padding(.leading, 10)
+                                                        Spacer() // Align to the right
+                                                    }
+                                                }
+                                            }// Add border using overlay
+
+                                        )
+
                                         .onSubmit {
                                             handleSendMessage()
                                         }
-                                    Button {
-                                        handleSendMessage()
-                                    } label: {
-                                        Image(systemName: "arrow.up.circle.fill")
-                                    }
-                                    .disabled($newUserMessage.wrappedValue.isEmpty)
-                                }
-                                .padding()
+                                    if textInputIsFocused {
+                                        Button {
+                                            handleSendMessage()
+                                        } label: {
+                                            Image(systemName: "paperplane.circle.fill")
+                                                .resizable()
+                                                .frame(width: 36, height: 36)
+                                                .foregroundColor($newUserMessage.wrappedValue.isEmpty ? lightGrayColor : darkColor)
 
-                            } else {
-                                EmptyView()
+
+                                        }
+                                        .disabled($newUserMessage.wrappedValue.isEmpty)
+                                    }
+                                }
+                                .padding([.bottom], 16)
+                                .padding([.horizontal], 16)
                             }
                         }
                 }
                 .showDragIndicator(true)
+                .enableFlickThrough(false)
                 .enableSwipeToDismiss()
+                .enableTapToDismiss(false)
                 .onDismiss {
                     widgetVisible = false
                 }
-                .onDragEnded { value in
-                    let threshold = -100.0
-                    if value.translation.height < threshold && !self.sheetExpanded {
-                        self.sheetExpanded = true
-                        let sendMessage = "sheet-expanded"
-                        self.viewModel.callbackValueFromNative.send(sendMessage)
-                    }
-                }
+//                .onDragEnded { value in
+//                    let threshold = -100.0
+//                    if value.translation.height < threshold && !self.sheetExpanded {
+//                        self.sheetExpanded = true
+//                        let sendMessage = "sheet-expanded"
+//                        self.viewModel.callbackValueFromNative.send(sendMessage)
+//                    }
+//                }
+                .customBackground(
+                                Color.white
+                                    .cornerRadius(28, corners: [.topLeft, .topRight])
+                                    .shadow(color: .black.opacity(0.3), radius: 1.5, x: 0, y: 1)
+                                    .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+                            )
                 .onReceive(self.$viewModel.callbackValueJS.wrappedValue, perform: { result in
                     switch result {
                     case "widget-rendered":
                         widgetVisible = true
                         bottomSheetPosition = .absolute(100)
+                        break;
                     case "preview-button-clicked":
                         self.sheetExpanded = true
                         bottomSheetPosition = .relativeTop(0.975)
+                        break;
+                    case _ where result.contains("streaming-message"):
+                        self.isLoading = true;
+                        let replacedResult = result.replacingOccurrences(of: "streaming-message:", with: "");
+                        self.isLoadingText = replacedResult;
+                        break;
+                    case _ where result.contains("streaming-finished"):
+                        self.isLoading = false;
+                        self.isLoadingText = "";
+                        break;
                     default:
                         break
                     }
                 })
-                .offset(y: self.$widgetVisible.wrappedValue ? bottomOffset : -10000)
+                .onChange(of: self.bottomSheetPosition) { newValue in
+                    switch newValue {
+                    case .absolute(100):
+                        self.sheetExpanded = false
+                        let sendMessage = "sheet-shrink"
+                        self.viewModel.callbackValueFromNative.send(sendMessage)
+                        break
+                    case .relative(0.7),
+                         .relativeTop(0.975):
+                        self.sheetExpanded = true
+                        let sendMessage = "sheet-expanded"
+                        self.viewModel.callbackValueFromNative.send(sendMessage)
+                        break
+                    default:
+                        break
+                    }
+                }
+                .opacity(self.$widgetVisible.wrappedValue  ?  1 : 0)
                 .padding([bottomOffset > 0 ? .bottom : .top], self.$widgetVisible.wrappedValue ? abs(bottomOffset) : 0)
         }
+
     }
 
     func handleSendMessage() {
@@ -97,11 +201,6 @@ private struct AlbyWidgetView<Content: View>: View {
         let sendMessage = self.$newUserMessage.wrappedValue
         newUserMessage = ""
         self.viewModel.callbackValueFromNative.send(sendMessage)
-    }
-
-    func handlePreviewButtonClicked() {
-        self.bottomSheetPosition = .relative(0.5)
-        self.sheetExpanded = true
     }
 
 }
@@ -122,6 +221,26 @@ public extension View {
     func addAlbyWidget(
         productId: String, brandId: String, bottomOffset: CGFloat = 0
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId).id(productId)
+    }
+
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+            clipShape( RoundedCorner(radius: radius, corners: corners) )
+        }
+}
+
+struct RoundedCorner: Shape {
+    let radius: CGFloat
+    let corners: UIRectCorner
+
+    init(radius: CGFloat = .infinity, corners: UIRectCorner = .allCorners) {
+        self.radius = radius
+        self.corners = corners
+    }
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
     }
 }
+
