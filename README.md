@@ -1,6 +1,6 @@
-[![CocoaPods](https://img.shields.io/badge/platforms-iOS-orange.svg?maxAge=2592000)](https://cocoapods.org/pods/alby_widget_ios)
+[![CocoaPods](https://img.shields.io/badge/platforms-iOS-orange.svg?maxAge=2592000)](https://cocoapods.org/pods/AlbyWidget)
 [![Languages](https://img.shields.io/badge/languages-OjbC%20%7C%20%20Swift-orange.svg?maxAge=2592000)](https://github.com/albycom/alby_widget_ios)
-[![CocoaPods](https://img.shields.io/cocoapods/v/alby_widget_ios.svg?maxAge=2592000)](https://cocoapods.org/pods/alby_widget_ios)
+[![CocoaPods](https://img.shields.io/cocoapods/v/alby_widget_ios.svg?maxAge=2592000)](https://cocoapods.org/pods/AlbyWidget)
 [![Apache License](http://img.shields.io/badge/license-APACHE2-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
@@ -14,7 +14,7 @@ Cocoapods 1.11.0 is required to install AlbyWidget.
 Add the AlbyWidget pod into your Podfile and run `pod install`.
 ```ruby
     target :YourTargetName do
-      pod 'alby_widget_ios'
+      pod 'AlbyWidget'
     end
 ```
 
