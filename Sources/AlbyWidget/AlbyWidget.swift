@@ -86,6 +86,7 @@ private struct AlbyWidgetView<Content: View>: View {
                                         .font(.system(size: 14))
                                         .focused($textInputIsFocused)
                                         .disabled($isLoading.wrappedValue)
+                                        .foregroundColor(darkColor)
                                         .background(
                                             RoundedRectangle(cornerRadius: 12)
                                                 .fill($isLoading.wrappedValue ? inputLoadingBg : Color.clear)
@@ -99,6 +100,7 @@ private struct AlbyWidgetView<Content: View>: View {
                                                 HStack {
                                                     if ($isLoading.wrappedValue) {
                                                         ProgressView()
+                                                            .tint(placeholderColor)
                                                             .scaleEffect(0.8)
                                                             .padding(.leading, 10)
                                                         Spacer() // Align to the right
