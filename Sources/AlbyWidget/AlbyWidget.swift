@@ -33,6 +33,7 @@ private struct AlbyWidgetView<Content: View>: View {
     let darkColor = Color(red: 17 / 255.0, green: 25 / 255.0, blue: 40 / 255.0, opacity: 1.0)
     let inputBorderColor = Color(red: 107 / 255.0, green: 114 / 255.0, blue: 128 / 255.0, opacity: 1.0);
     let inputLoadingBg = Color(red: 229 / 255.0, green: 231 / 255.0, blue: 235 / 255.0, opacity: 1.0);
+    let placeholderColor = Color(.sRGB, red: 96/255, green: 96/255, blue: 96/255, opacity: 0.6);
 
 
     @StateObject var viewModel = WebViewModel()
@@ -74,8 +75,8 @@ private struct AlbyWidgetView<Content: View>: View {
                             if sheetExpanded {
                                 HStack {
                                     TextField(
-                                        ($isLoading.wrappedValue ? $isLoadingText.wrappedValue : "Ask any question about this product")!,
-                                              text: $newUserMessage)
+                                        "", text: $newUserMessage, prompt: Text(($isLoading.wrappedValue ? $isLoadingText.wrappedValue : "Ask any question about this product")!)
+                                            .foregroundColor(placeholderColor))
                                         .onAppear(perform: {
                                                 UITextField.appearance().clearButtonMode = .whileEditing
                                             })
@@ -136,19 +137,11 @@ private struct AlbyWidgetView<Content: View>: View {
                 .onDismiss {
                     widgetVisible = false
                 }
-//                .onDragEnded { value in
-//                    let threshold = -100.0
-//                    if value.translation.height < threshold && !self.sheetExpanded {
-//                        self.sheetExpanded = true
-//                        let sendMessage = "sheet-expanded"
-//                        self.viewModel.callbackValueFromNative.send(sendMessage)
-//                    }
-//                }
                 .customBackground(
                                 Color.white
                                     .cornerRadius(28, corners: [.topLeft, .topRight])
-                                    .shadow(color: .black.opacity(0.3), radius: 1.5, x: 0, y: 1)
-                                    .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
+                                    .shadow(color: .black.opacity(0.3), radius: 1.5, x: 0, y: 1)
+                                    .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 4)
                             )
                 .onReceive(self.$viewModel.callbackValueJS.wrappedValue, perform: { result in
                     switch result {

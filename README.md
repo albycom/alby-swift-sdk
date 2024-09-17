@@ -1,6 +1,4 @@
-[![CocoaPods](https://img.shields.io/badge/platforms-iOS-orange.svg?maxAge=2592000)](https://cocoapods.org/pods/AlbyWidget)
 [![Languages](https://img.shields.io/badge/languages-OjbC%20%7C%20%20Swift-orange.svg?maxAge=2592000)](https://github.com/albycom/alby_widget_ios)
-[![CocoaPods](https://img.shields.io/cocoapods/v/alby_widget_ios.svg?maxAge=2592000)](https://cocoapods.org/pods/AlbyWidget)
 [![Apache License](http://img.shields.io/badge/license-APACHE2-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
@@ -8,16 +6,6 @@
 
 AlbyWidget for iOS supports iOS 15+. 
 Xcode 15 is required to build Alby iOS SDK.
-
-### CocoaPods
-Cocoapods 1.11.0 is required to install AlbyWidget.
-Add the AlbyWidget pod into your Podfile and run `pod install`.
-```ruby
-    target :YourTargetName do
-      pod 'AlbyWidget'
-    end
-```
-
 
 ### Swift Package Manager
 Add `https://github.com/albycom/alby_widget_ios` as a Swift Package Repository in Xcode and follow the instructions to add `AlbyWidget` as a Swift Package.
@@ -41,3 +29,5 @@ offset. In the example below we are moving the alby bottom sheet 50 points upwar
 .addAlbyWidget(productId: product.albyProductId, brandId: "017d2e91-58ee-41e4-a3c9-9cee17624b31", bottomOffset: 50)
 ```
 
+
+### Example
