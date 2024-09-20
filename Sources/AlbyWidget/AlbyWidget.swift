@@ -16,7 +16,7 @@ import BottomSheetSwiftUI
 
 private struct AlbyWidgetView<Content: View>: View {
     @State var widgetVisible = false
-    @State var bottomSheetPosition: BottomSheetPosition = .absolute(100)
+    @State var bottomSheetPosition: BottomSheetPosition = .absolute(80)
     @State var isLoading: Bool = false
     @State var isLoadingText: String?
     @State var sheetExpanded = false
@@ -34,6 +34,7 @@ private struct AlbyWidgetView<Content: View>: View {
     let inputBorderColor = Color(red: 107 / 255.0, green: 114 / 255.0, blue: 128 / 255.0, opacity: 1.0);
     let inputLoadingBg = Color(red: 229 / 255.0, green: 231 / 255.0, blue: 235 / 255.0, opacity: 1.0);
     let placeholderColor = Color(.sRGB, red: 96/255, green: 96/255, blue: 96/255, opacity: 0.6);
+    let dragIndicatorColor = Color(.sRGB, red: 121/255, green: 116/255, blue: 126/255, opacity: 0.6);
 
 
     @StateObject var viewModel = WebViewModel()
@@ -45,7 +46,7 @@ private struct AlbyWidgetView<Content: View>: View {
             Color.black.opacity(0)
                 .bottomSheet(
                     bottomSheetPosition: self.$bottomSheetPosition,
-                    switchablePositions: [.hidden, .absolute(100), .relative(0.7), .relativeTop(0.975)]
+                    switchablePositions: [.hidden, .absolute(80), .relative(0.7), .relativeTop(0.975)]
                 ) {
                     if (sheetExpanded) {
                         HStack(spacing: 4) {
@@ -70,7 +71,7 @@ private struct AlbyWidgetView<Content: View>: View {
                         }.padding(.leading)
                         Divider()
                     }
-                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, isScrollEnabled: true, viewModel: viewModel)
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, isScrollEnabled: self.$sheetExpanded.wrappedValue, viewModel: viewModel)
                         .safeAreaInset(edge: .bottom) {
                             if sheetExpanded {
                                 HStack {
@@ -133,6 +134,7 @@ private struct AlbyWidgetView<Content: View>: View {
                         }
                 }
                 .showDragIndicator(true)
+                .dragIndicatorColor(dragIndicatorColor)
                 .enableFlickThrough(false)
                 .enableSwipeToDismiss()
                 .enableTapToDismiss(false)
@@ -149,7 +151,7 @@ private struct AlbyWidgetView<Content: View>: View {
                     switch result {
                     case "widget-rendered":
                         widgetVisible = true
-                        bottomSheetPosition = .absolute(100)
+                        bottomSheetPosition = .absolute(80)
                         break;
                     case "preview-button-clicked":
                         self.sheetExpanded = true
@@ -170,7 +172,7 @@ private struct AlbyWidgetView<Content: View>: View {
                 })
                 .onChange(of: self.bottomSheetPosition) { newValue in
                     switch newValue {
-                    case .absolute(100):
+                    case .absolute(80):
                         self.sheetExpanded = false
                         let sendMessage = "sheet-shrink"
                         self.viewModel.callbackValueFromNative.send(sendMessage)

@@ -24,7 +24,6 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
 
     // Receiving data from React JS to IOS
     func receivedJsonValueFromWebView(value: [String: Any?]) {
-        print($viewModel);
         $viewModel.callbackValueJS.wrappedValue.send((value.first?.value as? String)!)
     }
 
@@ -41,6 +40,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         webview.navigationDelegate = context.coordinator
         webview.allowsBackForwardNavigationGestures = false
         webview.scrollView.isScrollEnabled = isScrollEnabled
+
         if #available(iOS 16.4, *) {
             webview.isInspectable = true
         } else {
@@ -61,6 +61,10 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
 
         if uiView.url != url {
             uiView.load(request)
+        }
+        
+        if uiView.scrollView.isScrollEnabled != isScrollEnabled {
+            uiView.scrollView.isScrollEnabled = isScrollEnabled;
         }
     }
 
