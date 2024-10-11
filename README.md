@@ -15,10 +15,17 @@ Add `https://github.com/albycom/alby_widget_ios` as a Swift Package Repository i
 ## Setup and Configuration
 This SDK only works with SwiftUI.
 
+## Prerequisites 
 1. Make sure you have an Alby account - if you don't, go to https://alby.com and create one.
-2. Get your brand id
+2. Get your brand id - this is an organization id that represents your brand
 3. Import the alby widget `import AlbyWidget`
-3. Go to the SwiftUI View where you want to place the widget and after everything just add
+
+## Components
+
+### addAlbyWidget
+The `addAlbyWidget` function displays the Alby widget inside a sheet (modal). This is ideal for cases where you want the widget to appear in an overlay or pop-up format, giving users the option to engage with the widget without leaving the current screen.
+
+Go to the SwiftUI View where you want to place the widget and after everything just add
 ```
 .addAlbyWidget(productId: "your product id", brandId: "your-brand-id")
 ```
@@ -30,11 +37,11 @@ offset. In the example below we are moving the alby bottom sheet 50 points upwar
 .addAlbyWidget(productId: product.albyProductId, brandId: "017d2e91-58ee-41e4-a3c9-9cee17624b31", bottomOffset: 50)
 ```
 
-### Possible issues
+#### Possible issues
 Depending on how your view is structured the keyboard inside the bottom sheet might not work as expected.
 Make sure that you place the widget inside a ScrollView so the keyboard can scroll and the content be displayed.
 
-### Example
+#### Example Usage
 ```swift
 struct HomeView: View {
     @State var productId = "my-product-id"
@@ -93,4 +100,26 @@ struct HomeView: View {
         
     }
 }
+```
+### AlbyInlineWidgetView
+The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It’s perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
+
+In the SwiftUI View where you want to place the widget, add the AlbyInlineWidgetView component and pass in the required brandId and productId parameters:
+```
+AlbyInlineWidgetView(
+    brandId: "your brand id",
+    productId: "your product id"
+)
+```
+
+#### Example Usage
+```swift
+VStack(spacing: 16) {
+    AlbyInlineWidgetView(
+        brandId: "your brand id",
+        productId: "your product id"
+    )
+    .padding(24)
+}
+.padding()
 ```
