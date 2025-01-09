@@ -27,7 +27,6 @@ private struct AlbyWidgetView<Content: View>: View {
     let bottomOffset: CGFloat
     let brandId: String
     let productId: String
-    let widgetId: String
 
 
     let lightGrayColor = Color(red: 209 / 255.0, green: 213 / 255.0, blue: 219 / 255.0, opacity: 1.0)
@@ -72,7 +71,7 @@ private struct AlbyWidgetView<Content: View>: View {
                         }.padding(.leading)
                         Divider()
                     }
-                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)")!, isScrollEnabled: self.$sheetExpanded.wrappedValue, viewModel: viewModel)
+                    SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)")!, isScrollEnabled: self.$sheetExpanded.wrappedValue, viewModel: viewModel)
                         .safeAreaInset(edge: .bottom) {
                             if sheetExpanded {
                                 HStack {
@@ -217,9 +216,9 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-        productId: String, brandId: String, widgetId:String, bottomOffset: CGFloat = 0
+        productId: String, brandId: String, bottomOffset: CGFloat = 0
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId).id(productId)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId).id(productId)
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {

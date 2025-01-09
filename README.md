@@ -34,7 +34,7 @@ The default placement will be in the bottom of the screen. If you have a bottom 
 offset. In the example below we are moving the alby bottom sheet 50 points upwards.
 
 ```
-.addAlbyWidget(productId: product.albyProductId, brandId: "017d2e91-58ee-41e4-a3c9-9cee17624b31", widgetId: "efa88e97-9d91-40d5-a967-446288d2c6cb", bottomOffset: 50)
+.addAlbyWidget(productId: product.albyProductId, brandId: "017d2e91-58ee-41e4-a3c9-9cee17624b31", bottomOffset: 50)
 ```
 
 #### Possible issues
@@ -46,12 +46,10 @@ Make sure that you place the widget inside a ScrollView so the keyboard can scro
 struct HomeView: View {
     @State var productId = "my-product-id"
     @State var brandId = "my-brand-id"
-    @State var brandId = "my-widget-id"
     @State private var reloadView = false
 
     @State var widgetProductId = "my-product-id"
     @State var widgetBrandId = "my-brand-id"
-    @State var widgetWidgetId = "my-widget-id"
     
     var body: some View {
         ScrollView {
@@ -111,7 +109,6 @@ In the SwiftUI View where you want to place the widget, add the AlbyInlineWidget
 AlbyInlineWidgetView(
     brandId: "your brand id",
     productId: "your product id"
-    widgetId: "you widget id"
 )
 ```
 
@@ -121,7 +118,6 @@ VStack(spacing: 16) {
     AlbyInlineWidgetView(
         brandId: "your brand id",
         productId: "your product id"
-        widgetId: "your widget id"
     )
     .padding(24)
 }
