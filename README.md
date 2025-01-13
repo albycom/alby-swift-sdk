@@ -18,7 +18,8 @@ This SDK only works with SwiftUI.
 ## Prerequisites 
 1. Make sure you have an Alby account - if you don't, go to https://alby.com and create one.
 2. Get your brand id - this is an organization id that represents your brand
-3. Import the alby widget `import AlbyWidget`
+3. Get your widget id = this is a unique id that you can get in the widgets embed page inside the alby UI.
+4. Import the alby widget `import AlbyWidget`
 
 ## Components
 
@@ -27,14 +28,14 @@ The `addAlbyWidget` function displays the Alby widget inside a sheet (modal). Th
 
 Go to the SwiftUI View where you want to place the widget and after everything just add
 ```
-.addAlbyWidget(productId: "your product id", brandId: "your-brand-id")
+.addAlbyWidget(productId: "your product id", brandId: "your-brand-id", widgetId: "your-widget-id")
 ```
 
 The default placement will be in the bottom of the screen. If you have a bottom bar or something similar, make sure you add a bottom
 offset. In the example below we are moving the alby bottom sheet 50 points upwards.
 
 ```
-.addAlbyWidget(productId: product.albyProductId, brandId: "017d2e91-58ee-41e4-a3c9-9cee17624b31", bottomOffset: 50)
+.addAlbyWidget(productId: "123", brandId: "456", widgetId: "789", bottomOffset: 50)
 ```
 
 #### Possible issues
@@ -46,10 +47,12 @@ Make sure that you place the widget inside a ScrollView so the keyboard can scro
 struct HomeView: View {
     @State var productId = "my-product-id"
     @State var brandId = "my-brand-id"
+    @State var widgetId = "my-widget-id"
     @State private var reloadView = false
 
     @State var widgetProductId = "my-product-id"
     @State var widgetBrandId = "my-brand-id"
+    @State var widgetWidgetId = "my-widget-id"
     
     var body: some View {
         ScrollView {
@@ -68,8 +71,16 @@ struct HomeView: View {
                     .padding()
                     .background(.yellow.opacity(0.2))
                     .cornerRadius(10)
+                Text("Widget ID")
+                TextField("Widget ID", text: $widgetId)
+                    .font(.title3)
+                    .foregroundColor(.purple)
+                    .padding()
+                    .background(.yellow.opacity(0.2))
+                    .cornerRadius(10)
                 Button(action: {
                     // Update the widget values when the button is pressed
+                    widgetWidgetId = widgetId
                     widgetProductId = productId
                     widgetBrandId = brandId
                 }) {
@@ -94,7 +105,7 @@ struct HomeView: View {
             }
             .padding()
         }
-        .addAlbyWidget(productId: $widgetProductId.wrappedValue, brandId: $widgetBrandId.wrappedValue, bottomOffset: 1)
+        .addAlbyWidget(productId: $widgetProductId.wrappedValue, brandId: $widgetBrandId.wrappedValue, brandId: $widgetWidgetId.wrappedValue, bottomOffset: 1)
             .background(Color(UIColor.white))
             .id(reloadView)
         
@@ -104,11 +115,12 @@ struct HomeView: View {
 ### AlbyInlineWidgetView
 The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It’s perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
 
-In the SwiftUI View where you want to place the widget, add the AlbyInlineWidgetView component and pass in the required brandId and productId parameters:
+In the SwiftUI View where you want to place the widget, add the AlbyInlineWidgetView component and pass in the required brandId, productId and widgetId parameters:
 ```
 AlbyInlineWidgetView(
     brandId: "your brand id",
-    productId: "your product id"
+    productId: "your product id",
+    widgetId: "your widget id"
 )
 ```
 
@@ -117,7 +129,8 @@ AlbyInlineWidgetView(
 VStack(spacing: 16) {
     AlbyInlineWidgetView(
         brandId: "your brand id",
-        productId: "your product id"
+        productId: "your product id",
+        widgetId: "your widget id"
     )
     .padding(24)
 }

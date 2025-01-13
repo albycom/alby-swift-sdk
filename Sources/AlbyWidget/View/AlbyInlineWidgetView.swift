@@ -7,31 +7,33 @@
 
 import SwiftUI
 
-/// A SwiftUI view that displays the Alby Inline Widget.
-/// This widget allows embedding the Alby generative QA component with a specific `productId` and `brandId`
+/// A SwiftUI view that displays the alby Inline Widget.
+/// This widget allows embedding the alby Generative QA component with a specific `productId`, `brandId` and `widgetId`
 /// into your SwiftUI applications.
 ///
-/// You can pass the `productId` and `brandId` to customize the widget for specific product and brand contexts.
+/// You can pass the `productId`, `brandId` and `widgetId` to customize the widget for specific product and brand contexts.
 ///
 /// ## Example Usage
 /// ```swift
-/// AlbyInlineWidgetView(productId: "123", brandId: "456")
+/// AlbyInlineWidgetView(productId: "123", brandId: "456", widgetId: "789")
 /// ```
 ///
-/// This will create a web-based view displaying the widget with the given `productId` and `brandId`.
+/// This will create a web-based view displaying the widget with the given `productId`, `brandId` and `widgetId`.
 ///
 public struct AlbyInlineWidgetView: View {
     public let productId: String
     public let brandId: String
+    public let widgetId: String
     
-    public init(productId: String, brandId: String) {
+    public init(productId: String, brandId: String, widgetId: String) {
         self.productId = productId
         self.brandId = brandId
+        self.widgetId = widgetId
     }
 
     @StateObject var viewModel = WebViewModel()
 
     public var body: some View {
-        SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)"), isScrollEnabled: true, viewModel: viewModel)
+        SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)"), isScrollEnabled: true, viewModel: viewModel)
     }
 }
