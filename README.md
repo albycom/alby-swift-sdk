@@ -136,3 +136,25 @@ VStack(spacing: 16) {
 }
 .padding()
 ```
+
+
+## Event Tracking
+The SDK also provides an API to sending purchase data via HTTP requests.
+
+### Usage
+1. Initialize the AlbyPurchasePixel Class 
+```swift
+import AlbyWidget
+
+let purchasePixel = AlbyPurchasePixel()
+```
+2. Use the sendPurchasePixel method to send a purchase pixel request:
+```swift
+purchasePixel.sendPurchasePixel(
+    brandId: "",                                     // Your brand ID
+    orderId: 12345,                                  // Order ID (String or Number)
+    orderTotal: 99.99,                               // Order total (Float or Number)
+    productIds: ["A123", 456],                       // List of product IDs (String or Number)
+    currency: "USD"                                  // Currency code
+)
+```
