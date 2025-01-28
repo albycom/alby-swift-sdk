@@ -28,6 +28,9 @@ private struct AlbyWidgetView<Content: View>: View {
     let brandId: String
     let productId: String
     let widgetId: String?
+    let testId: String?
+    let testVersion: String?
+    let testDescription: String?
 
 
     let lightGrayColor = Color(red: 209 / 255.0, green: 213 / 255.0, blue: 219 / 255.0, opacity: 1.0)
@@ -73,7 +76,7 @@ private struct AlbyWidgetView<Content: View>: View {
                         Divider()
                     }
                     SwiftWebView(
-                        url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)&productId=\(productId)\(widgetId != nil ? "&widgetId=\(widgetId!)" : "")")!,
+                        url: createURL(),
                         isScrollEnabled: self.$sheetExpanded.wrappedValue,
                         viewModel: viewModel
                     ).safeAreaInset(edge: .bottom) {
@@ -204,6 +207,32 @@ private struct AlbyWidgetView<Content: View>: View {
         self.viewModel.callbackValueFromNative.send(sendMessage)
     }
 
+    func createURL() -> URL {
+        let baseURL = "https://cdn.alby.com/assets/alby_widget.html"
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "brandId", value: brandId),
+            URLQueryItem(name: "productId", value: productId),
+            URLQueryItem(name: "useBrandStyling", value: "false"),
+            URLQueryItem(name: "component", value: "alby-mobile-generative-qa")
+        ]
+        
+        if let widgetId = widgetId {
+            components.queryItems?.append(URLQueryItem(name: "widgetId", value: widgetId))
+        }
+        if let testId = testId {
+            components.queryItems?.append(URLQueryItem(name: "testId", value: testId))
+        }
+        if let testVersion = testVersion {
+            components.queryItems?.append(URLQueryItem(name: "testVersion", value: testVersion))
+        }
+        if let testDescription = testDescription {
+            components.queryItems?.append(URLQueryItem(name: "testDescription", value: testDescription))
+        }
+        
+        return components.url!
+    }
+
 }
 
 public extension View {
@@ -220,9 +249,9 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0
+        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId).id(productId)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, testId: testId, testVersion: testVersion, testDescription: testDescription).id(productId)
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {

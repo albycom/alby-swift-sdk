@@ -12,6 +12,7 @@ import SwiftUI
 /// into your SwiftUI applications.
 ///
 /// You can pass the `productId`, `brandId` and `widgetId` to customize the widget for specific product and brand contexts.
+/// You can also pass the `testId`, `testVersion` and `testDescription` to customize the widget for A/B testing.
 ///
 /// ## Example Usage
 /// ```swift
@@ -24,16 +25,22 @@ public struct AlbyInlineWidgetView: View {
     public let productId: String
     public let brandId: String
     public let widgetId: String
-    
-    public init(productId: String, brandId: String, widgetId: String) {
+    public let testId: String?
+    public let testVersion: String?
+    public let testDescription: String?
+
+    public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
         self.productId = productId
         self.brandId = brandId
         self.widgetId = widgetId
+        self.testId = testId
+        self.testVersion = testVersion
+        self.testDescription = testDescription
     }
 
     @StateObject var viewModel = WebViewModel()
 
     public var body: some View {
-        SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)"), isScrollEnabled: true, viewModel: viewModel)
+        SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"), isScrollEnabled: true, viewModel: viewModel)
     }
 }
