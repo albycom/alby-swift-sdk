@@ -29,7 +29,7 @@ import AlbyWidget
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        AlbySDK().initialize(brandId: "your-brand-id")
+        AlbySDK.shared.initialize(brandId: "your-brand-id")
         return true
     }
 }
@@ -117,7 +117,7 @@ The SDK also provides an API to sending purchase data and other events via HTTP 
 ### Usage
 1. Use the sendPurchasePixel method to send a purchase pixel request:
 ```swift
-AlbySDK().sendPurchasePixel(
+AlbySDK.shared.sendPurchasePixel(
     orderId: 12345, // Order ID (String or Number)
     orderTotal: 99.99, // Order total (Float or Number)
     productIds: ["A123", 456], // List of product IDs (String or Number)
@@ -126,7 +126,7 @@ AlbySDK().sendPurchasePixel(
 ```
 2. Use the sendAddToCartEvent method to send an add to cart event:
 ```swift
-AlbySDK().sendAddToCartEvent(
+AlbySDK.shared.sendAddToCartEvent(
     price: 99.99, // Price of the item
     variantId: "A123", // Variant ID of the item
     currency: "USD", // Currency of the item

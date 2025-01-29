@@ -1,6 +1,5 @@
 //
-//  AlbyPurchasePixel.swift
-//  AlbyWidget
+//  AlbySDK.swift
 //
 //  Created by Jason Deng on 1/15/25.
 //
@@ -8,17 +7,19 @@
 import Foundation
 import WebKit
 
-class AlbySDK {
+public class AlbySDK {
+    public static let shared = AlbySDK()  // Singleton instance
+
     private var brandId: String?
     private var isInitialized = false
     private let client = URLSession.shared
     private let analyticsEndpoint = "https://eks.alby.com/analytics-service/v1/api/track"
-    private let cookieDomain = "https://cdn.alby.com"
-    private var webView: WKWebView
+    private let cookieDomain = "cdn.alby.com"
+    private var webView: WKWebView?
     
-    init() {}
+    public init() {}
     
-    func initialize(brandId: String) {
+    public func initialize(brandId: String) {
         guard !isInitialized else {
             print("AlbySDK is already initialized.")
             return
@@ -31,23 +32,34 @@ class AlbySDK {
         preferences.allowsContentJavaScript = true
         configuration.defaultWebpagePreferences = preferences
         
-        self.webView = WKWebView(frame: .zero, configuration: configuration)
-        self.webView.isHidden = true
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.isHidden = true
+        self.webView = webView
+        
         
         // Load the Alby JS in the background
         if let url = URL(string: "https://cdn.alby.com/assets/alby_widget.html?brandId=\(brandId)") {
             let request = URLRequest(url: url)
-            self.webView.load(request)
+            webView.load(request)
         }
         
         isInitialized = true
+        print("AlbySDK initialized successfully.")
     }
     
-    func sendPurchasePixel(orderId: Any, orderTotal: Any, productIds: [Any], currency: String) {
-        ensureInitialized()
+    public func sendPurchasePixel(orderId: Any, orderTotal: Any, productIds: [Any], currency: String) {
+        guard isInitialized else {
+            print("AlbySDK has not been initialized. Please call `initialize(brandId)` first.")
+            return
+        }
+
+        guard brandId != nil else {
+            print("AlbySDK is missing brandId. Ensure `initialize` is called and brandId is set.")
+            return
+        }
         
         let orderInfo: [String: String] = [
-            "brand_id": brandId ?? "",
+            "brand_id": self.brandId ?? "",
             "order_id": String(describing: orderId),
             "order_total": String(describing: orderTotal),
             "product_ids": productIds.map { String(describing: $0) }.joined(separator: ","),
@@ -72,18 +84,28 @@ class AlbySDK {
         }
     }
     
-    func sendAddToCartEvent(price: String, variantId: String, currency: String, quantity: String) {
-        ensureInitialized()
+    public func sendAddToCartEvent(price: Any, variantId: String, currency: String, quantity: Any) {
+        guard isInitialized else {
+            print("AlbySDK has not been initialized. Please call `initialize(brandId)` first.")
+            return
+        }
+
+        guard brandId != nil else {
+            print("AlbySDK is missing brandId. Ensure `initialize` is called and brandId is set.")
+            return
+        }
         
-        retrieveCookies { cookies in            
+        retrieveCookies { [weak self] cookies in
+            guard let self = self else { return }
+
             var payload: [String: Any] = [
-                "brand_id": brandId ?? "",
+                "brand_id": self.brandId ?? "",
                 "event_type": "Click:AddToCart",
                 "properties": [
-                    "price": price,
+                    "price": String(describing: price),
                     "variant_id": variantId,
                     "currency": currency,
-                    "quantity": quantity
+                    "quantity": String(describing: quantity)
                 ],
                 "context": [
                     "locale": Locale.current.identifier,
@@ -91,6 +113,7 @@ class AlbySDK {
                 ],
                 "event_timestamp": Date().timeIntervalSince1970
             ]
+            
             
             if let userId = cookies["_alby_user"] {
                 payload["user_id"] = userId
@@ -104,22 +127,13 @@ class AlbySDK {
     }
     
     private func retrieveCookies(completion: @escaping ([String: String]) -> Void) {
-        webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
+        webView?.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
             // Filter cookies for the hardcoded domain
             let filteredCookies = cookies.filter { $0.domain.contains(self.cookieDomain) }
             let cookieDict = filteredCookies.reduce(into: [String: String]()) { dict, cookie in
                 dict[cookie.name] = cookie.value
             }
             completion(cookieDict)
-        }
-    }
-    
-    private func ensureInitialized() {
-        guard isInitialized else {
-            fatalError("AlbySDK has not been initialized. Please call `initialize(brandId)` first.")
-        }
-        guard brandId != nil else {
-            fatalError("Missing brandId. Ensure `initialize` is called and brandId is set.")
         }
     }
     
