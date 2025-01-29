@@ -22,25 +22,29 @@ import SwiftUI
 /// This will create a web-based view displaying the widget with the given `productId`, `brandId` and `widgetId`.
 ///
 public struct AlbyInlineWidgetView: View {
-    public let productId: String
-    public let brandId: String
-    public let widgetId: String
-    public let testId: String?
-    public let testVersion: String?
-    public let testDescription: String?
+  public let productId: String
+  public let brandId: String
+  public let widgetId: String
+  public let testId: String?
+  public let testVersion: String?
+  public let testDescription: String?
 
-    public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
-        self.productId = productId
-        self.brandId = brandId
-        self.widgetId = widgetId
-        self.testId = testId
-        self.testVersion = testVersion
-        self.testDescription = testDescription
-    }
+  public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
+    self.productId = productId
+    self.brandId = brandId
+    self.widgetId = widgetId
+    self.testId = testId
+    self.testVersion = testVersion
+    self.testDescription = testDescription
+  }
 
-    @StateObject var viewModel = WebViewModel()
+  @StateObject var viewModel = WebViewModel()
 
-    public var body: some View {
-        SwiftWebView(url: URL(string: "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"), isScrollEnabled: true, viewModel: viewModel)
-    }
+  public var body: some View {
+    SwiftWebView(
+      url: URL(
+        string:
+          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"
+      ), isScrollEnabled: true, viewModel: viewModel)
+  }
 }

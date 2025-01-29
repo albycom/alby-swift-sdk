@@ -9,7 +9,7 @@ AlbyWidget for iOS supports iOS 15+.
 Xcode 15 is required to build Alby iOS SDK.
 
 ### Swift Package Manager
-Add `https://github.com/albycom/alby_widget_ios` as a Swift Package Repository in Xcode and follow the instructions to add `AlbyWidget` as a Swift Package.
+Add `https://github.com/albycom/alby-swift-sdk` as a Swift Package Repository in Xcode and follow the instructions to add `AlbyWidget` as a Swift Package.
 
 
 ## Setup and Configuration
