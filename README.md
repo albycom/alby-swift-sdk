@@ -82,13 +82,6 @@ You can also pass in A/B test parameters to the widget by passing in the `testId
 The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It’s perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
 
 In the SwiftUI View where you want to place the widget, add the AlbyInlineWidgetView component and pass in the required brandId, productId and widgetId parameters:
-```
-AlbyInlineWidgetView(
-    brandId: "your-brand-id",
-    productId: "your-product-id",
-    widgetId: "your-widget-id"
-)
-```
 
 #### Example Usage
 ```swift
