@@ -174,6 +174,13 @@ private struct AlbyWidgetView<Content: View>: View {
                         self.isLoading = false;
                         self.isLoadingText = "";
                         break;
+                    case _ where result.contains("thread-id-changed"):
+                        let threadId = result.replacingOccurrences(of: "thread-id-changed:", with: "")
+                        NotificationCenter.default.post(
+                            name: .albyThreadIdChanged,
+                            object: threadId.isEmpty ? nil : threadId
+                        )
+                        break;
                     default:
                         break
                     }
@@ -276,4 +283,9 @@ struct RoundedCorner: Shape {
         let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
         return Path(path.cgPath)
     }
+}
+
+extension Notification.Name {
+    /// Notification sent when the Alby widget thread ID changes
+    public static let albyThreadIdChanged = Notification.Name("albyThreadIdChanged")
 }

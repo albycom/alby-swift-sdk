@@ -148,8 +148,54 @@ AlbyInlineWidgetView(
 addAlbyWidget(
     brandId: "your-brand-id",
     productId: "your-product-id",
+    widgetId: "your-widget-id",
     threadId: "existing-thread-id"  // Pass saved thread ID here
 )
+```
+
+2. **Tracking Thread Changes**: Here's a complete example of managing conversation persistence:
+
+```swift
+import AlbyWidget  // Import needed to access .albyThreadIdChanged
+
+struct ProductView: View {
+    @AppStorage("savedThreadId") private var savedThreadId: String?
+    
+    var body: some View {
+        VStack {
+            // Add the widget with the saved thread ID
+            addAlbyWidget(
+                brandId: "your-brand-id",
+                productId: "your-product-id",
+                widgetId: "your-widget-id",
+            )
+            .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
+                if let newThreadId = notification.object as? String {
+                    // Save new thread ID
+                    savedThreadId = newThreadId
+                } else {
+                    // Conversation was cleared/reset
+                    savedThreadId = nil
+                }
+            }
+
+            AlbyInlineWidgetView(
+                productId: "your-product-id",
+                brandId: "your-brand-id",
+                widgetId: "your-widget-id",
+            )
+            .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
+                if let newThreadId = notification.object as? String {
+                    // Save new thread ID
+                    savedThreadId = newThreadId
+                } else {
+                    // Conversation was cleared/reset
+                    savedThreadId = nil
+                }
+            }
+        }
+    }
+}
 ```
 
 ## Event Tracking
