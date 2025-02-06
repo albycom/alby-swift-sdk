@@ -1,25 +1,31 @@
 name: Release
+
 on:
   push:
-    # Pattern matched against refs/tags
+    # Pattern matched against refs/tags (runs on any tag push)
     tags:
       - '*'
+
 jobs:
   build:
-      runs-on: macos-latest
-      environment: production
-      steps:
-          - uses: actions/checkout@v2
-          - name: Clean DerivedData and CocoaPods cache
-            run: |
-              rm -rf ~/Library/Developer/Xcode/DerivedData
-              pod cache clean --all
-              pod deintegrate
-              pod install
-        - name: Validate Podspec (Local)
-          run: pod lib lint --allow-warnings --verbose
-        - name: Publish to CocoaPod register
-          env:
-              COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-          run: |
-              pod trunk push AlbyWidget.podspec --allow-warnings --verbose
+    runs-on: macos-latest
+    environment: production
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@2
+
+      - name: Clean DerivedData and CocoaPods cache
+        run: |
+          rm -rf ~/Library/Developer/Xcode/DerivedData
+          pod cache clean --all
+          pod deintegrate
+          pod install
+
+      - name: Validate Podspec (Local)
+        run: pod lib lint --allow-warnings --verbose
+
+      - name: Publish to CocoaPods Trunk
+        env:
+          COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+        run: pod trunk push AlbyWidget.podspec --allow-warnings --verbose
