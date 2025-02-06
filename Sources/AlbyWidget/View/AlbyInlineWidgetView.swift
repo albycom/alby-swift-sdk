@@ -44,7 +44,11 @@ public struct AlbyInlineWidgetView: View {
     SwiftWebView(
       url: URL(
         string:
-          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"
+          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)"
+        + (widgetId.map { "&widgetId=\($0)" } ?? "")
+        + (testId.map { "&testId=\($0)" } ?? "")
+        + (testVersion.map { "&testVersion=\($0)" } ?? "")
+        + (testDescription.map { "&testDescription=\($0)" } ?? "")
       ), isScrollEnabled: true, viewModel: viewModel)
   }
 }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'AlbyWidget'
-    s.version          = '0.3.8'
+    s.version          = '0.3.9'
     s.summary          = 'Increase conversion in your e-commerce by answering all your shopper questions before they even ask.'
     s.homepage         = 'https://github.com/albycom/alby_widget_ios'
     s.license          = { :type => 'MIT', :file => 'LICENSE.md' }

@@ -57,27 +57,25 @@ public class AlbySDK {
       return
     }
 
-    let orderInfo: [String: String] = [
-      "brand_id": self.brandId ?? "",
-      "order_id": String(describing: orderId),
-      "order_total": String(describing: orderTotal),
-      "product_ids": productIds.map { String(describing: $0) }.joined(separator: ","),
-      "currency": currency,
-    ]
+    retrieveCookies { [weak self] cookies in
+      guard let self = self else { return }
 
-    let queryString = orderInfo.map { key, value in
-      "\(key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
-    }.joined(separator: "&")
+      let orderInfo: [String: String] = [
+        "brand_id": self.brandId ?? "",
+        "order_id": String(describing: orderId),
+        "order_total": String(describing: orderTotal),
+        "product_ids": productIds.map { String(describing: $0) }.joined(separator: ","),
+        "currency": currency
+      ]
 
-    retrieveCookies { cookies in
-      var finalUrl = "https://tr.alby.com/p?\(queryString)"
+      let queryString = orderInfo.map { key, value in
+        "\(key.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+      }.joined(separator: "&")
 
-      if let userId = cookies["_alby_user"] {
-        finalUrl += "&user_id=\(userId)"
-      }
+      let baseUrl = "https://tr.alby.com/p?\(queryString)"
+      let finalUrl = cookies["_alby_user"].map { baseUrl + "&user_id=\($0)" } ?? baseUrl
 
-      Task { [weak self] in
-        guard let self = self else { return }
+      Task { [finalUrl] in
         await self.performRequest(url: finalUrl)
       }
     }
@@ -97,29 +95,25 @@ public class AlbySDK {
     retrieveCookies { [weak self] cookies in
       guard let self = self else { return }
 
-      var payload: [String: Any] = [
+      let payload: [String: Any] = [
         "brand_id": self.brandId ?? "",
         "event_type": "Click:AddToCart",
         "properties": [
           "price": String(describing: price),
           "variant_id": variantId,
           "currency": currency,
-          "quantity": String(describing: quantity),
+          "quantity": String(describing: quantity)
         ],
         "context": [
           "locale": Locale.current.identifier,
-          "source": "ios-sdk",
+          "source": "ios-sdk"
         ],
         "event_timestamp": Date().timeIntervalSince1970,
+        "user_id": cookies["_alby_user"] ?? ""
       ]
 
-      if let userId = cookies["_alby_user"] {
-        payload["user_id"] = userId
-      }
-
-      Task { [weak self] in
-        guard let self = self else { return }
-        await self.performRequest(url: analyticsEndpoint, method: "POST", requestBody: payload)
+      Task { [payload] in
+        await self.performRequest(url: self.analyticsEndpoint, method: "POST", requestBody: payload)
       }
     }
   }
@@ -155,7 +149,7 @@ public class AlbySDK {
     }
 
     do {
-      let (data, response) = try await client.data(for: request)
+      let (_, response) = try await client.data(for: request)
       if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
         print("alby Success: \(httpResponse.statusCode)")
       } else {
