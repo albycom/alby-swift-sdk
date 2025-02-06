@@ -81,10 +81,6 @@ offset. In the example below we are moving the alby bottom sheet 50 points upwar
 .addAlbyWidget(productId: "123", brandId: "456", widgetId: "789", bottomOffset: 50)
 ```
 
-#### Possible issues
-Depending on how your view is structured the keyboard inside the bottom sheet might not work as expected.
-Make sure that you place the widget inside a ScrollView so the keyboard can scroll and the content be displayed.
-
 #### Example Usage
 ```swift
 struct HomeView: View {    
@@ -98,11 +94,23 @@ struct HomeView: View {
 }
 ```
 
-You can also pass in A/B test parameters to the widget by passing in the `testId`, `testVersion` and `testDescription` parameters:
-```swift
-.addAlbyWidget(productId: "your-product-id", brandId: "your-brand-id", widgetId: "your-widget-id", bottomOffset: 1, testId: "your-test-id", testVersion: "your-test-version", testDescription: "your-test-description")
-```
+### Parameters
 
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `productId` | Yes | - | The ID of the product |
+| `brandId` | Yes | - | The ID of the brand |
+| `widgetId` | No | `nil` | Custom widget identifier |
+| `bottomOffset` | No | `0` | Offset from bottom of screen |
+| `isExpanded` | No | `false` | Start widget in expanded state |
+| `testId` | No | `nil` | A/B test identifier |
+| `testVersion` | No | `nil` | A/B test version |
+| `testDescription` | No | `nil` | A/B test description |
+| `threadId` | No | `nil` | Conversation thread identifier |
+
+#### Possible issues
+Depending on how your view is structured the keyboard inside the bottom sheet might not work as expected.
+Make sure that you place the widget inside a ScrollView so the keyboard can scroll and the content be displayed.
 
 ### AlbyInlineWidgetView
 The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It's perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
@@ -118,18 +126,17 @@ AlbyInlineWidgetView(
 )
 ```
 
-Optional: You can pass in A/B test parameters to the widget by passing in the `testId`, `testVersion` and `testDescription` parameters:
-```swift
-AlbyInlineWidgetView(
-    brandId: "your-brand-id",
-    productId: "your-product-id",
-    widgetId: "your-widget-id",
-    testId: "your-test-id",
-    testVersion: "your-test-version",
-    testDescription: "your-test-description"
-)
-```
+### Parameters
 
+| Parameter | Required | Default | Description |
+|-----------|----------|---------|-------------|
+| `productId` | Yes | - | The ID of the product |
+| `brandId` | Yes | - | The ID of the brand |
+| `widgetId` | Yes | - | Custom widget identifier |
+| `testId` | No | `nil` | A/B test identifier |
+| `testVersion` | No | `nil` | A/B test version |
+| `testDescription` | No | `nil` | A/B test description |
+| `threadId` | No | `nil` | Conversation thread identifier |
 
 ## Conversation Management
 
