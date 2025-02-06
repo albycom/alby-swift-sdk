@@ -274,3 +274,19 @@ struct RoundedCorner: Shape {
     }
 }
 
+public extension Bundle {
+    static var module: Bundle {
+        let mainBundle = Bundle(for: AlbyWidget.self)
+        
+        #if SWIFT_PACKAGE
+        return mainBundle
+        #else
+        guard let resourceBundleURL = mainBundle.url(forResource: "AlbyWidget", withExtension: "bundle"),
+              let resourceBundle = Bundle(url: resourceBundleURL) else {
+            return mainBundle
+        }
+        return resourceBundle
+        #endif
+    }
+}
+

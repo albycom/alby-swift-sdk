@@ -41,14 +41,32 @@ public struct AlbyInlineWidgetView: View {
   @StateObject var viewModel = WebViewModel()
 
   public var body: some View {
-    SwiftWebView(
-      url: URL(
-        string:
-          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)"
-        + (widgetId.map { "&widgetId=\($0)" } ?? "")
-        + (testId.map { "&testId=\($0)" } ?? "")
-        + (testVersion.map { "&testVersion=\($0)" } ?? "")
-        + (testDescription.map { "&testDescription=\($0)" } ?? "")
-      ), isScrollEnabled: true, viewModel: viewModel)
+    // Break down URL construction into smaller parts
+    let baseUrl = "https://cdn.alby.com/assets/alby_widget.html"
+    let requiredParams = "component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)"
+    
+    // Optional parameters
+    var optionalParams = ""
+    if let widgetId = widgetId {
+      optionalParams += "&widgetId=\(widgetId)"
+    }
+    if let testId = testId {
+      optionalParams += "&testId=\(testId)"
+    }
+    if let testVersion = testVersion {
+      optionalParams += "&testVersion=\(testVersion)"
+    }
+    if let testDescription = testDescription {
+      optionalParams += "&testDescription=\(testDescription)"
+    }
+    
+    // Combine all parts
+    let finalUrl = "\(baseUrl)?\(requiredParams)\(optionalParams)"
+    
+    return SwiftWebView(
+      url: URL(string: finalUrl)!,
+      isScrollEnabled: self.$sheetExpanded.wrappedValue,
+      viewModel: viewModel
+    )
   }
 }
