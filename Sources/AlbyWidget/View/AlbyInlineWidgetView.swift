@@ -22,23 +22,23 @@ import SwiftUI
 /// This will create a web-based view displaying the widget with the given `productId`, `brandId` and `widgetId`.
 ///
 public struct AlbyInlineWidgetView: View {
-  public let productId: String
-  public let brandId: String
-  public let widgetId: String
-  public let testId: String?
-  public let testVersion: String?
-  public let testDescription: String?
+  let brandId: String
+  let productId: String
+  let widgetId: String?
+  let testId: String?
+  let testVersion: String?
+  let testDescription: String?
+  let viewModel: AlbyWidgetViewModel
 
-  public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
+  public init(productId: String, brandId: String, widgetId: String? = nil, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
     self.productId = productId
     self.brandId = brandId
     self.widgetId = widgetId
     self.testId = testId
     self.testVersion = testVersion
     self.testDescription = testDescription
+    self.viewModel = AlbyWidgetViewModel()
   }
-
-  @StateObject var viewModel = WebViewModel()
 
   public var body: some View {
     // Break down URL construction into smaller parts
@@ -47,16 +47,16 @@ public struct AlbyInlineWidgetView: View {
     
     // Optional parameters
     var optionalParams = ""
-    if let widgetId = widgetId {
+    if let widgetId {
       optionalParams += "&widgetId=\(widgetId)"
     }
-    if let testId = testId {
+    if let testId {
       optionalParams += "&testId=\(testId)"
     }
-    if let testVersion = testVersion {
+    if let testVersion {
       optionalParams += "&testVersion=\(testVersion)"
     }
-    if let testDescription = testDescription {
+    if let testDescription {
       optionalParams += "&testDescription=\(testDescription)"
     }
     
@@ -65,7 +65,7 @@ public struct AlbyInlineWidgetView: View {
     
     return SwiftWebView(
       url: URL(string: finalUrl)!,
-      isScrollEnabled: self.$sheetExpanded.wrappedValue,
+      isScrollEnabled: false,
       viewModel: viewModel
     )
   }

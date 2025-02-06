@@ -276,7 +276,8 @@ struct RoundedCorner: Shape {
 
 public extension Bundle {
     static var module: Bundle {
-        let mainBundle = Bundle(for: AlbyWidget.self)
+        let bundleClass: AnyClass = AlbyWidget.self
+        let mainBundle = Bundle(for: bundleClass)
         
         #if SWIFT_PACKAGE
         return mainBundle
