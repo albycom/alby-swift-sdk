@@ -160,6 +160,7 @@ private struct AlbyWidgetView<Content: View>: View {
                     case "widget-rendered":
                         widgetVisible = true
                         bottomSheetPosition = .absolute(80)
+                        NotificationCenter.default.post(name: .albyWidgetRendered, object: nil)
                         break;
                     case "preview-button-clicked":
                         self.sheetExpanded = true
@@ -288,4 +289,7 @@ struct RoundedCorner: Shape {
 extension Notification.Name {
     /// Notification sent when the Alby widget thread ID changes
     public static let albyThreadIdChanged = Notification.Name("albyThreadIdChanged")
+    
+    /// Notification sent when the Alby widget is rendered
+    public static let albyWidgetRendered = Notification.Name("albyWidgetRendered")
 }

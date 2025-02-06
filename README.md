@@ -142,61 +142,18 @@ AlbyInlineWidgetView(
     productId: "your-product-id",
     brandId: "your-brand-id",
     widgetId: "your-widget-id",
-    threadId: "existing-thread-id"  // Pass saved thread ID here
+    threadId: "your-thread-id"
 )
 
 addAlbyWidget(
     brandId: "your-brand-id",
     productId: "your-product-id",
     widgetId: "your-widget-id",
-    threadId: "existing-thread-id"  // Pass saved thread ID here
+    threadId: "your-thread-id"
 )
 ```
 
-2. **Tracking Thread Changes**: Here's a complete example of managing conversation persistence:
-
-```swift
-import AlbyWidget  // Import needed to access .albyThreadIdChanged
-
-struct ProductView: View {
-    @AppStorage("savedThreadId") private var savedThreadId: String?
-    
-    var body: some View {
-        VStack {
-            // Add the widget with the saved thread ID
-            addAlbyWidget(
-                brandId: "your-brand-id",
-                productId: "your-product-id",
-                widgetId: "your-widget-id",
-            )
-            .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
-                if let newThreadId = notification.object as? String {
-                    // Save new thread ID
-                    savedThreadId = newThreadId
-                } else {
-                    // Conversation was cleared/reset
-                    savedThreadId = nil
-                }
-            }
-
-            AlbyInlineWidgetView(
-                productId: "your-product-id",
-                brandId: "your-brand-id",
-                widgetId: "your-widget-id",
-            )
-            .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
-                if let newThreadId = notification.object as? String {
-                    // Save new thread ID
-                    savedThreadId = newThreadId
-                } else {
-                    // Conversation was cleared/reset
-                    savedThreadId = nil
-                }
-            }
-        }
-    }
-}
-```
+2. **Tracking Thread Changes**: Use the `.albyThreadIdChanged` notification to track conversation changes. See [Widget Notifications](#widget-notifications) for implementation details.
 
 ## Event Tracking
 The SDK also provides an API to sending purchase data and other events via HTTP requests.
@@ -220,3 +177,50 @@ AlbySDK.shared.sendAddToCartEvent(
     quantity: "1" // Quantity of the item
 )
 ```
+
+## Widget Notifications
+
+The SDK provides notifications to track widget state and conversation changes:
+
+```swift
+import AlbyWidget
+
+struct ProductView: View {
+    @State private var isWidgetReady = false
+    @AppStorage("savedThreadId") private var savedThreadId: String?
+    
+    var body: some View {
+        addAlbyWidget(
+            brandId: "your-brand-id",
+            productId: "product-123"
+        )
+        // Widget ready notification
+        .onReceive(NotificationCenter.default.publisher(for: .albyWidgetRendered)) { _ in
+            // Widget is ready to use
+            isWidgetReady = true
+            
+            // Example: Show a loading spinner until widget is ready
+            if isWidgetReady {
+                loadingSpinner.isHidden = true
+            }
+        }
+        // Thread ID change notification
+        .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
+            if let newThreadId = notification.object as? String {
+                // Save new thread ID for conversation persistence
+                savedThreadId = newThreadId
+            } else {
+                // Conversation was cleared/reset
+                savedThreadId = nil
+            }
+        }
+    }
+}
+```
+
+### Available Notifications
+
+- `.albyWidgetRendered`: Fired when the widget is fully loaded and ready to use
+- `.albyThreadIdChanged`: Fired when a conversation thread ID changes or is reset. The notification includes the new thread ID as its `object`, or `nil` when the conversation is reset.
+
+Both notifications are accessible through `NotificationCenter` after importing `AlbyWidget`.
