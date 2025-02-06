@@ -28,6 +28,7 @@ private struct AlbyWidgetView<Content: View>: View {
     let brandId: String
     let productId: String
     let widgetId: String?
+    let threadId: String?
     let testId: String?
     let testVersion: String?
     let testDescription: String?
@@ -220,6 +221,9 @@ private struct AlbyWidgetView<Content: View>: View {
         if let widgetId = widgetId {
             components.queryItems?.append(URLQueryItem(name: "widgetId", value: widgetId))
         }
+        if let threadId = threadId {
+            components.queryItems?.append(URLQueryItem(name: "threadId", value: threadId))
+        }
         if let testId = testId {
             components.queryItems?.append(URLQueryItem(name: "testId", value: testId))
         }
@@ -249,9 +253,9 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil
+        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, testId: testId, testVersion: testVersion, testDescription: testDescription).id(productId)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, threadId: threadId, testId: testId, testVersion: testVersion, testDescription: testDescription).id(productId)
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {

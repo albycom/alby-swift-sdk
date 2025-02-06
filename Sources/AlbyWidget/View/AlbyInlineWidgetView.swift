@@ -25,14 +25,16 @@ public struct AlbyInlineWidgetView: View {
   public let productId: String
   public let brandId: String
   public let widgetId: String
+  public let threadId: String?
   public let testId: String?
   public let testVersion: String?
   public let testDescription: String?
 
-  public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
+  public init(productId: String, brandId: String, widgetId: String, threadId: String? = nil, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
     self.productId = productId
     self.brandId = brandId
     self.widgetId = widgetId
+    self.threadId = threadId
     self.testId = testId
     self.testVersion = testVersion
     self.testDescription = testDescription
@@ -44,7 +46,7 @@ public struct AlbyInlineWidgetView: View {
     SwiftWebView(
       url: URL(
         string:
-          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"
+          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")"
       ), isScrollEnabled: true, viewModel: viewModel)
   }
 }

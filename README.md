@@ -44,6 +44,7 @@ This SDK only works with SwiftUI.
 1. Brand ID - This is an organization identifier that represents your brand
 2. Widget ID - This is a unique identifier for the alby widget that you can get in the widgets embed page inside the alby UI.
 
+
 ## Initialization
 The SDK must be initialized with the unique identifier for your alby account (Brand ID).
 
@@ -126,6 +127,28 @@ AlbyInlineWidgetView(
     testId: "your-test-id",
     testVersion: "your-test-version",
     testDescription: "your-test-description"
+)
+```
+
+
+## Conversation Management
+
+Both `addAlbyWidget` and `AlbyInlineWidgetView` support conversation persistence through thread IDs:
+
+1. **Restoring Conversations**: Pass an existing thread ID to continue a previous conversation:
+
+```swift
+AlbyInlineWidgetView(
+    productId: "your-product-id",
+    brandId: "your-brand-id",
+    widgetId: "your-widget-id",
+    threadId: "existing-thread-id"  // Pass saved thread ID here
+)
+
+addAlbyWidget(
+    brandId: "your-brand-id",
+    productId: "your-product-id",
+    threadId: "existing-thread-id"  // Pass saved thread ID here
 )
 ```
 
