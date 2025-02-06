@@ -9,8 +9,33 @@ AlbyWidget for iOS supports iOS 15+.
 Xcode 15 is required to build Alby iOS SDK.
 
 ### Swift Package Manager
-Add `https://github.com/albycom/alby-swift-sdk` as a Swift Package Repository in Xcode and follow the instructions to add `AlbyWidget` as a Swift Package.
 
+AlbyWidget is available via [Swift Package Manager](https://swift.org/package-manager). Follow the steps below to install.
+
+1. Open your project and navigate to your project's settings.
+2. Select the **Package Dependencies** tab and click on the **add** button below the packages list.
+3. Enter the URL of the Swift SDK repository `https://github.com/albycom/alby-swift-sdk` in the text field. This should bring up the package on the screen.
+4. For the dependency rule dropdown select - **Up to Next Major Version** and leave the pre-filled versions as is.
+5. Click **Add Package**.
+6. On the next prompt, assign the package product `AlbyWidget` to your app target and click **Add Package**.
+
+## Updating the Package
+
+To update to the latest version:
+
+1. In Xcode:
+   - File > Packages > Update to Latest Package Versions
+   - Or File > Packages > Reset Package Caches (if you're having issues)
+
+2. Via command line:
+   ```bash
+   swift package update
+   ```
+
+Note: The package follows semantic versioning (semver):
+- Patch updates (1.0.x) contain bug fixes
+- Minor updates (1.x.0) add new features in a backwards-compatible way
+- Major updates (x.0.0) may contain breaking changes
 
 ## Setup and Configuration
 This SDK only works with SwiftUI.
@@ -79,7 +104,7 @@ You can also pass in A/B test parameters to the widget by passing in the `testId
 
 
 ### AlbyInlineWidgetView
-The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It’s perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
+The `AlbyInlineWidgetView` is a component that allows embedding the Alby widget directly into your app's UI. It's perfect for inline use on any page, like product details or brand-specific screens, where the widget integrates seamlessly within the existing view hierarchy.
 
 In the SwiftUI View where you want to place the widget, add the AlbyInlineWidgetView component and pass in the required brandId, productId and widgetId parameters:
 
