@@ -22,41 +22,41 @@ import SwiftUI
 /// This will create a web-based view displaying the widget with the given `productId`, `brandId` and `widgetId`.
 ///
 public struct AlbyInlineWidgetView: View {
-  let brandId: String
-  let productId: String
-  let widgetId: String?
-  let testId: String?
-  let testVersion: String?
-  let testDescription: String?
-  let viewModel: AlbyWidgetViewModel
+  public let productId: String
+  public let brandId: String
+  public let widgetId: String
+  public let testId: String?
+  public let testVersion: String?
+  public let testDescription: String?
 
-  public init(productId: String, brandId: String, widgetId: String? = nil, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
+  public init(productId: String, brandId: String, widgetId: String, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil) {
     self.productId = productId
     self.brandId = brandId
     self.widgetId = widgetId
     self.testId = testId
     self.testVersion = testVersion
     self.testDescription = testDescription
-    self.viewModel = AlbyWidgetViewModel()
   }
+
+  @StateObject var viewModel = WebViewModel()
 
   public var body: some View {
     // Break down URL construction into smaller parts
     let baseUrl = "https://cdn.alby.com/assets/alby_widget.html"
-    let requiredParams = "component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)"
+    let requiredParams = "brandId=\(brandId)&productId=\(productId)"
     
     // Optional parameters
     var optionalParams = ""
-    if let widgetId {
+    if let widgetId = widgetId {
       optionalParams += "&widgetId=\(widgetId)"
     }
-    if let testId {
+    if let testId = testId {
       optionalParams += "&testId=\(testId)"
     }
-    if let testVersion {
+    if let testVersion = testVersion {
       optionalParams += "&testVersion=\(testVersion)"
     }
-    if let testDescription {
+    if let testDescription = testDescription {
       optionalParams += "&testDescription=\(testDescription)"
     }
     
