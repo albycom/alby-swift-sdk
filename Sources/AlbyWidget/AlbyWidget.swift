@@ -32,7 +32,7 @@ private struct AlbyWidgetView<Content: View>: View {
     let testId: String?
     let testVersion: String?
     let testDescription: String?
-
+    let isInitiallyExpanded: Bool
 
     let lightGrayColor = Color(red: 209 / 255.0, green: 213 / 255.0, blue: 219 / 255.0, opacity: 1.0)
     let darkColor = Color(red: 17 / 255.0, green: 25 / 255.0, blue: 40 / 255.0, opacity: 1.0)
@@ -40,7 +40,6 @@ private struct AlbyWidgetView<Content: View>: View {
     let inputLoadingBg = Color(red: 229 / 255.0, green: 231 / 255.0, blue: 235 / 255.0, opacity: 1.0);
     let placeholderColor = Color(.sRGB, red: 96/255, green: 96/255, blue: 96/255, opacity: 0.6);
     let dragIndicatorColor = Color(.sRGB, red: 121/255, green: 116/255, blue: 126/255, opacity: 0.6);
-
 
     @StateObject var viewModel = WebViewModel()
 
@@ -159,7 +158,12 @@ private struct AlbyWidgetView<Content: View>: View {
                     switch result {
                     case "widget-rendered":
                         widgetVisible = true
-                        bottomSheetPosition = .absolute(80)
+                        if !isInitiallyExpanded {
+                            bottomSheetPosition = .absolute(80)
+                        } else {
+                            sheetExpanded = true
+                            bottomSheetPosition = .relativeTop(0.975)
+                        }
                         NotificationCenter.default.post(name: .albyWidgetRendered, object: nil)
                         break;
                     case "preview-button-clicked":
@@ -206,7 +210,6 @@ private struct AlbyWidgetView<Content: View>: View {
                 .opacity(self.$widgetVisible.wrappedValue  ?  1 : 0)
                 .padding([bottomOffset > 0 ? .bottom : .top], self.$widgetVisible.wrappedValue ? abs(bottomOffset) : 0)
         }
-
     }
 
     func handleSendMessage() {
@@ -222,7 +225,6 @@ private struct AlbyWidgetView<Content: View>: View {
         components.queryItems = [
             URLQueryItem(name: "brandId", value: brandId),
             URLQueryItem(name: "productId", value: productId),
-            URLQueryItem(name: "useBrandStyling", value: "false"),
             URLQueryItem(name: "component", value: "alby-mobile-generative-qa")
         ]
         
@@ -261,9 +263,9 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil
+        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil, isExpanded: Bool = false
     ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, threadId: threadId, testId: testId, testVersion: testVersion, testDescription: testDescription).id(productId)
+        AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, threadId: threadId, testId: testId, testVersion: testVersion, testDescription: testDescription, isInitiallyExpanded: isExpanded).id(productId)
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {

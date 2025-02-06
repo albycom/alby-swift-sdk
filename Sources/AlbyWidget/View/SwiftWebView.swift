@@ -33,6 +33,8 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
 
         let config = WKWebViewConfiguration()
         config.defaultWebpagePreferences = prefs
+        // Use default persistent data store to keep cookies and localStorage
+        config.websiteDataStore = .default()
         config.userContentController.add(self.makeCoordinator(), name: "IOS_BRIDGE")
 
         let webview = WKWebView(frame: .zero, configuration: config)
@@ -57,8 +59,10 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         guard let myUrl = url else {
             return
         }
-        let request = URLRequest(url: myUrl)
-
+        // Set cache policy to only ignore local cache
+        var request = URLRequest(url: myUrl)
+        request.cachePolicy = .reloadIgnoringLocalCacheData
+        
         if uiView.url != url {
             uiView.load(request)
         }
