@@ -10,8 +10,16 @@ jobs:
       environment: production
       steps:
           - uses: actions/checkout@v2
-          - name: Publish to CocoaPod register
-            env:
-                COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          - name: Clean DerivedData and CocoaPods cache
             run: |
-                pod trunk push AlbyWidget.podspec
+              rm -rf ~/Library/Developer/Xcode/DerivedData
+              pod cache clean --all
+              pod deintegrate
+              pod install
+        - name: Validate Podspec (Local)
+          run: pod lib lint --allow-warnings --verbose
+        - name: Publish to CocoaPod register
+          env:
+              COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+          run: |
+              pod trunk push AlbyWidget.podspec --allow-warnings --verbose
