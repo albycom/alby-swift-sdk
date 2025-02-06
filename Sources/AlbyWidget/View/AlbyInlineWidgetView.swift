@@ -41,32 +41,10 @@ public struct AlbyInlineWidgetView: View {
   @StateObject var viewModel = WebViewModel()
 
   public var body: some View {
-    // Break down URL construction into smaller parts
-    let baseUrl = "https://cdn.alby.com/assets/alby_widget.html"
-    let requiredParams = "brandId=\(brandId)&productId=\(productId)"
-    
-    // Optional parameters
-    var optionalParams = ""
-    if let widgetId = widgetId {
-      optionalParams += "&widgetId=\(widgetId)"
-    }
-    if let testId = testId {
-      optionalParams += "&testId=\(testId)"
-    }
-    if let testVersion = testVersion {
-      optionalParams += "&testVersion=\(testVersion)"
-    }
-    if let testDescription = testDescription {
-      optionalParams += "&testDescription=\(testDescription)"
-    }
-    
-    // Combine all parts
-    let finalUrl = "\(baseUrl)?\(requiredParams)\(optionalParams)"
-    
-    return SwiftWebView(
-      url: URL(string: finalUrl)!,
-      isScrollEnabled: false,
-      viewModel: viewModel
-    )
+    SwiftWebView(
+      url: URL(
+        string:
+          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&useBrandStyling=false&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)&testId=\(testId)&testVersion=\(testVersion)&testDescription=\(testDescription)"
+      ), isScrollEnabled: true, viewModel: viewModel)
   }
 }
