@@ -10,7 +10,7 @@ import WebKit
 public class AlbySDK {
   public static let shared = AlbySDK()  // Singleton instance
 
-  private var brandId: String?
+  private(set) public var brandId: String?
   private var isInitialized = false
   private let client = URLSession.shared
   private let analyticsEndpoint = "https://eks.alby.com/analytics-service/v1/api/track"
