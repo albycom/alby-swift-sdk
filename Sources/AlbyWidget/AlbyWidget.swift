@@ -262,15 +262,9 @@ public extension View {
     /// - Parameter mainContent: A view that is used as main content for the BottomSheet.
 
     func addAlbyWidget(
-<<<<<<< Updated upstream
-        productId: String, brandId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil, isExpanded: Bool = false
+        productId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil, isExpanded: Bool = false
     ) -> some View {
         AlbyWidgetView(content: self, bottomOffset: bottomOffset, brandId: brandId, productId: productId, widgetId: widgetId, threadId: threadId, testId: testId, testVersion: testVersion, testDescription: testDescription, isInitiallyExpanded: isExpanded).id(productId)
-=======
-        productId: String, widgetId: String? = nil, bottomOffset: CGFloat = 0, testId: String? = nil, testVersion: String? = nil, testDescription: String? = nil, threadId: String? = nil
-    ) -> some View {
-        AlbyWidgetView(content: self, bottomOffset: bottomOffset, productId: productId, widgetId: widgetId, threadId: threadId, testId: testId, testVersion: testVersion, testDescription: testDescription).id(productId)
->>>>>>> Stashed changes
     }
 
     func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
