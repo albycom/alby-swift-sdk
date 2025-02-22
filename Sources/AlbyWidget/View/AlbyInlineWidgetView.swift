@@ -41,10 +41,14 @@ public struct AlbyInlineWidgetView: View {
   @StateObject var viewModel = WebViewModel()
 
   public var body: some View {
-    SwiftWebView(
-      url: URL(
-        string:
-          "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(AlbySDK.shared.brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")"
-      ), isScrollEnabled: true, viewModel: viewModel)
+    let brandId = AlbySDK.shared.brandId ?? ""
+
+    let widgetUrl = "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")"
+    
+    
+    return SwiftWebView(
+      url: URL(string: widgetUrl),
+      isScrollEnabled: true,
+      viewModel: viewModel)
   }
 }
