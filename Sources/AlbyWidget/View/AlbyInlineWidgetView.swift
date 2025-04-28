@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WebKit
 
 /// A SwiftUI view that displays the alby Inline Widget.
 /// This widget allows embedding the alby Generative QA component with a specific `productId` and `widgetId`
@@ -39,16 +40,34 @@ public struct AlbyInlineWidgetView: View {
   }
 
   @StateObject var viewModel = WebViewModel()
+  @State private var isLoading = true
 
   public var body: some View {
     let brandId = AlbySDK.shared.brandId ?? ""
-
-    let widgetUrl = "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")"
     
+    let urlString = "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")&autoScroll=true"
     
-    return SwiftWebView(
-      url: URL(string: widgetUrl),
-      isScrollEnabled: true,
-      viewModel: viewModel)
+    GeometryReader { geometry in
+      ZStack {
+        SwiftWebView(
+          url: URL(string: urlString),
+          isScrollEnabled: true,
+          viewModel: viewModel)
+          .frame(height: geometry.size.height)
+        
+        if isLoading {
+          ProgressView()
+            .scaleEffect(1.5)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.white.opacity(0.8))
+        }
+      }
+      .frame(minHeight: isLoading ? 200 : geometry.size.height)
+      .onReceive(viewModel.callbackValueJS) { event in
+        if event == "widget-rendered" || event == "widget-empty" {
+          isLoading = false
+        }
+      }
+    }
   }
 }
