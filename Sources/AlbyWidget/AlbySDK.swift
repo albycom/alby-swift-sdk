@@ -13,7 +13,7 @@ public class AlbySDK {
   private(set) public var brandId: String?
   private var isInitialized = false
   private let client = URLSession.shared
-  private let analyticsEndpoint = "https://eks.alby.com/analytics-service/v1/api/track"
+  private let analyticsEndpoint = "https://app.alby.net/analytics-service/v1/api/track"
   private let cookieDomain = "cdn.alby.com"
   private var webView: WKWebView?
 
