@@ -13,7 +13,7 @@ public class AlbySDK {
   private(set) public var brandId: String?
   private var isInitialized = false
   private let client = URLSession.shared
-  private let analyticsEndpoint = "https://app.alby.net/analytics-service/v1/api/track"
+  private let analyticsEndpoint = "https://app.alby.net/tracking-service/track/widget"
   private let cookieDomain = "cdn.alby.com"
   private var webView: WKWebView?
 
@@ -46,7 +46,7 @@ public class AlbySDK {
     print("AlbySDK initialized successfully.")
   }
 
-  public func sendPurchasePixel(orderId: Any, orderTotal: Any, productIds: [Any], currency: String) {
+  public func sendPurchasePixel(orderId: Any, orderTotal: Any, variantIds: [Any], currency: String) {
     guard isInitialized else {
       print("AlbySDK has not been initialized. Please call `initialize(brandId)` first.")
       return
@@ -64,7 +64,7 @@ public class AlbySDK {
         "brand_id": self.brandId ?? "",
         "order_id": String(describing: orderId),
         "order_total": String(describing: orderTotal),
-        "product_ids": productIds.map { String(describing: $0) }.joined(separator: ","),
+        "variant_ids": variantIds.map { String(describing: $0) }.joined(separator: ","),
         "currency": currency
       ]
 

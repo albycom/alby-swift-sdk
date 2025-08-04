@@ -171,7 +171,7 @@ The SDK also provides an API to sending purchase data and other events via HTTP 
 AlbySDK.shared.sendPurchasePixel(
     orderId: 12345, // Order ID (String or Number)
     orderTotal: 99.99, // Order total (Float or Number)
-    productIds: ["A123", 456], // List of product IDs (String or Number)
+    variantIds: ["A123", 456], // List of Variant IDs (String or Number)
     currency: "USD" // Currency code
 )
 ```
