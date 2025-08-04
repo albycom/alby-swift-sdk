@@ -64,7 +64,13 @@ public struct AlbyInlineWidgetView: View {
       }
       .frame(minHeight: isLoading ? 200 : geometry.size.height)
       .onReceive(viewModel.callbackValueJS) { event in
-        if event == "widget-rendered" || event == "widget-empty" {
+        if event == "widget-rendered" {
+          NotificationCenter.default.post(name: .albyWidgetRendered, object: nil)
+          isLoading = false
+        }
+
+        if event == "widget-empty" {
+          NotificationCenter.default.post(name: .albyWidgetEmpty, object: nil)
           isLoading = false
         }
       }
