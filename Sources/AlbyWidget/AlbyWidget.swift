@@ -165,6 +165,10 @@ private struct AlbyWidgetView<Content: View>: View {
                         }
                         NotificationCenter.default.post(name: .albyWidgetRendered, object: nil)
                         break;
+                    case "widget-empty":
+                        widgetVisible = false
+                        NotificationCenter.default.post(name: .albyWidgetEmpty, object: nil)
+                        break;
                     case "preview-button-clicked":
                         self.sheetExpanded = true
                         bottomSheetPosition = .relativeTop(0.975)
@@ -293,4 +297,7 @@ extension Notification.Name {
     
     /// Notification sent when the Alby widget is rendered
     public static let albyWidgetRendered = Notification.Name("albyWidgetRendered")
+
+    /// Notification sent when the Alby widget is empty
+    public static let albyWidgetEmpty = Notification.Name("albyWidgetEmpty")
 }

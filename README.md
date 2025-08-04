@@ -211,6 +211,10 @@ struct ProductView: View {
                 loadingSpinner.isHidden = true
             }
         }
+        // Widget unable to appear
+        .onReceive(NotificationCenter.default.publisher(for: .albyWidgetEmpty)) { _ in
+            loadingSpinner.isHidden = true
+        }
         // Thread ID change notification
         .onReceive(NotificationCenter.default.publisher(for: .albyThreadIdChanged)) { notification in
             if let newThreadId = notification.object as? String {
@@ -225,9 +229,24 @@ struct ProductView: View {
 }
 ```
 
+
+```swift
+// Inline widget example
+AlbyInlineWidgetView(
+    productId: "product-123",
+    widgetId: widgetId
+)
+.frame(height: 500)
+.padding(.horizontal)
+.onReceive(NotificationCenter.default.publisher(for: .albyWidgetEmpty)) { _ in
+    print("handle widget unable to load")
+}
+```
+
 ### Available Notifications
 
 - `.albyWidgetRendered`: Fired when the widget is fully loaded and ready to use
 - `.albyThreadIdChanged`: Fired when a conversation thread ID changes or is reset. The notification includes the new thread ID as its `object`, or `nil` when the conversation is reset.
+- `.albyWidgetEmpty`: Fired when the widget is unable to render. This can happen for a variety of reasons, for example, the product ID specified is not inside alby's product catalog.
 
 Both notifications are accessible through `NotificationCenter` after importing `AlbyWidget`.
