@@ -48,9 +48,6 @@ public struct AlbyInlineWidgetView: View {
     let urlString = "https://cdn.alby.com/assets/alby_widget.html?component=alby-generative-qa&brandId=\(brandId)&productId=\(productId)&widgetId=\(widgetId)\(threadId != nil ? "&threadId=\(threadId!)" : "")\(testId != nil ? "&testId=\(testId!)" : "")\(testVersion != nil ? "&testVersion=\(testVersion!)" : "")\(testDescription != nil ? "&testDescription=\(testDescription!)" : "")&autoScroll=true"
 
     ZStack {
-      // isScrollEnabled: false prevents the WebView from capturing scroll gestures
-      // when embedded inside a host app's ScrollView. Height grows dynamically via
-      // KVO on scrollView.contentSize so all content remains visible without internal scroll.
       SwiftWebView(
         url: URL(string: urlString),
         isScrollEnabled: false,
