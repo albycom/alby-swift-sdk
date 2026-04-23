@@ -7,4 +7,6 @@ class WebViewModel: ObservableObject {
 
     // Javascript to IOS
     var callbackValueJS = PassthroughSubject<String, Never>()
+
+    @Published var contentHeight: CGFloat = 0
 }

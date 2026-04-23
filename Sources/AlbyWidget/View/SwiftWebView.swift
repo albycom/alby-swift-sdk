@@ -42,6 +42,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         webview.navigationDelegate = context.coordinator
         webview.allowsBackForwardNavigationGestures = false
         webview.scrollView.isScrollEnabled = isScrollEnabled
+        context.coordinator.observeContentSize(of: webview)
 
         if #available(iOS 16.4, *) {
             webview.isInspectable = true
@@ -53,6 +54,11 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         webview.backgroundColor = UIColor.white
 
         return webview
+    }
+
+    static func dismantleUIView(_ uiView: WKWebView, coordinator: Coordinator) {
+        coordinator.contentSizeObservation?.invalidate()
+        coordinator.contentSizeObservation = nil
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
@@ -75,6 +81,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: SwiftWebView
         var callbackValueFromNative: AnyCancellable?
+        var contentSizeObservation: NSKeyValueObservation?
 
         var delegate: WebViewHandlerDelegate?
 
@@ -83,7 +90,17 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
             self.delegate = parent
         }
 
+        func observeContentSize(of webView: WKWebView) {
+            guard contentSizeObservation == nil else { return }
+            contentSizeObservation = webView.scrollView.observe(\.contentSize, options: [.new]) { [weak self] scrollView, _ in
+                DispatchQueue.main.async {
+                    self?.parent.viewModel.contentHeight = scrollView.contentSize.height
+                }
+            }
+        }
+
         deinit {
+            contentSizeObservation?.invalidate()
             callbackValueFromNative?.cancel()
         }
 
