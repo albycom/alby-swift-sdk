@@ -93,8 +93,13 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         func observeContentSize(of webView: WKWebView) {
             guard contentSizeObservation == nil else { return }
             contentSizeObservation = webView.scrollView.observe(\.contentSize, options: [.new]) { [weak self] scrollView, _ in
+                // Whole-point height avoids fractional contentSize oscillation (common near max
+                // layout) from thrashing SwiftUI/WKWebView frame updates and flickering.
+                let height = ceil(scrollView.contentSize.height)
                 DispatchQueue.main.async {
-                    self?.parent.viewModel.contentHeight = scrollView.contentSize.height
+                    guard let self else { return }
+                    guard height != self.parent.viewModel.contentHeight else { return }
+                    self.parent.viewModel.contentHeight = height
                 }
             }
         }
