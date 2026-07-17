@@ -9,4 +9,8 @@ class WebViewModel: ObservableObject {
     var callbackValueJS = PassthroughSubject<String, Never>()
 
     @Published var contentHeight: CGFloat = 0
+
+    /// When false, contentSize KVO updates are ignored. Used by the inline widget to
+    /// skip the large pre-render contentSize spike before `widget-rendered`.
+    var tracksContentHeight = false
 }
