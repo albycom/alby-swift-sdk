@@ -66,6 +66,10 @@ public struct AlbyInlineWidgetView: View {
       if event == "widget-rendered" {
         NotificationCenter.default.post(name: .albyWidgetRendered, object: nil)
         isLoading = false
+        // Start tracking height only after render so pre-layout contentSize
+        // spikes (often ~viewport) are not applied to the frame.
+        viewModel.contentHeight = 0
+        viewModel.tracksContentHeight = true
       }
 
       if event == "widget-empty" {

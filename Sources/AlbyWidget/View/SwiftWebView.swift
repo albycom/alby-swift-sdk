@@ -35,7 +35,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         config.defaultWebpagePreferences = prefs
         // Use default persistent data store to keep cookies and localStorage
         config.websiteDataStore = .default()
-        config.userContentController.add(self.makeCoordinator(), name: "IOS_BRIDGE")
+        config.userContentController.add(context.coordinator, name: "IOS_BRIDGE")
 
         let webview = WKWebView(frame: .zero, configuration: config)
 
@@ -62,6 +62,8 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
     }
 
     func updateUIView(_ uiView: WKWebView, context: Context) {
+        context.coordinator.parent = self
+
         guard let myUrl = url else {
             return
         }
@@ -98,6 +100,7 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
                 let height = ceil(scrollView.contentSize.height)
                 DispatchQueue.main.async {
                     guard let self else { return }
+                    guard self.parent.viewModel.tracksContentHeight else { return }
                     guard height != self.parent.viewModel.contentHeight else { return }
                     self.parent.viewModel.contentHeight = height
                 }
@@ -110,7 +113,6 @@ struct SwiftWebView: UIViewRepresentable, WebViewHandlerDelegate {
         }
 
         func webView(_ webview: WKWebView, didFinish: WKNavigation!) {
-
             // sending data from IOS to React JS
             self.callbackValueFromNative = self.parent.viewModel.callbackValueFromNative
                 .receive(on: RunLoop.main)
